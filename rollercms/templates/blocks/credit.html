@@ -1,0 +1,24 @@
+{% load sekizai_tags thumbnail static %}
+<section class="credit">
+	<div class="container">
+		<div class="credit-wrapper">
+			<ul class="credit-list">
+				<li class="credit-item">
+					<img src="{{ instance.image_1.url }}" alt="" width="54" height="54"/>
+					<h3 class="credit-title">{{ instance.title_1 }}</h3>
+					<p class="credit-descr">{{ instance.description_1 }}</p>
+				</li>
+				<li class="credit-item">
+					<img src="{{ instance.image_2.url }}" alt="" width="54" height="54"/>
+					<h3 class="credit-title">{{ instance.title_2 }}</h3>
+					<p class="credit-descr">{{ instance.description_2 }}</p>
+				</li>
+				<li class="credit-item">
+					<img src="{{ instance.image_3.url }}" alt="" width="54" height="54"/>
+					<h3 class="credit-title">{{ instance.title_3 }}</h3>
+					<p class="credit-descr">{{ instance.description_3 }}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+</section>

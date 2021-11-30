@@ -1,0 +1,31 @@
+{% load sekizai_tags thumbnail static %}
+<section class="benefit container">
+	<div class="benefit-wrapper">
+		<div class="benefit-left">
+			<h2 class="benefit-title">{{ instance.tagline_title }}</h2>
+			<p class="benefit-subtitle">{{ instance.tagline_subtitle }}</p>
+		</div>
+		<div class="benefit-right">
+			<p class="benefit-right__descr">
+				{{ instance.summary_text }}
+			</p>
+			<a href="/blog" class="benefit-link">Читать больше</a>
+			<ul class="benefit-list">
+				<li class="benefit-item">
+					<span class="benefit-number">01</span>
+					<h2 class="benefit-item__title">{{ instance.benefit_1_title }}</h2>
+					<p class="benefit-item__descr">
+						{{ instance.benefit_1 }}
+					</p>
+				</li>
+				<li class="benefit-item">
+					<span class="benefit-number">02</span>
+					<h2 class="benefit-item__title">{{ instance.benefit_2_title }}</h2>
+					<p class="benefit-item__descr">
+						{{ instance.benefit_2 }}
+					</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+</section>

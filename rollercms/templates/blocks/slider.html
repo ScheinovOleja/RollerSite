@@ -1,0 +1,20 @@
+{% load sekizai_tags thumbnail static cms_tags %}
+<section class="slider-wrapper">
+	{% for slide in instance.gallery.photo_set.all %}
+		<div class="slider-slide">
+			<div class="slider-descr">
+				<a href="{% page_url slide.link %}" style="text-decoration: none">
+					<h1 class="slide-title">{{ slide.title }}</h1>
+				</a>
+				<p class="slide-info">{{ slide.description }}</p>
+			</div>
+			<img
+					class="slide-img"
+					src="{{ slide.file.url }}"
+					alt="Фотография слайдера"
+					width="1920"
+					height="800"
+			/>
+		</div>
+	{% endfor %}
+</section>
