@@ -3,8 +3,10 @@ from cms.admin.useradmin import PageUserAdmin
 from cms.models import PageUser, PageUserGroup
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.apps import apps
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
@@ -45,7 +47,23 @@ class CustomUserAdmin(UserAdmin):
     avatar_image.allow_tags = True
 
 
-# apps.get_model('cms.PageUserGroup')._meta.app_label = 'login'
+class MyGroupAdmin(BaseGroupAdmin):
+    search_fields = ('name',)
+    ordering = ('name',)
+    filter_horizontal = ('permissions',)
+
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
+        if db_field.name == 'permissions':
+            qs = kwargs.get('queryset', db_field.remote_field.model.objects)
+            # Avoid a major performance hit resolving permission names which
+            # triggers a content_type load:
+            kwargs['queryset'] = qs.select_related('content_type')
+        return super().formfield_for_manytomany(db_field, request=request, **kwargs)
+
+
+# apps.get_model('login.CustomGroup')._meta.app_label = 'login'
 # admin.site.unregister(PageUser)
 # admin.site.unregister(PageUserGroup)
+admin.site.unregister(Group)
+admin.site.register(Group, MyGroupAdmin)
 admin.site.register(MyUser, CustomUserAdmin)

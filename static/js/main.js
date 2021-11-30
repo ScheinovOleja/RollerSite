@@ -11,7 +11,7 @@ const userLogo = document.querySelector('.user-logo');
 const csrfToken = $("input[name='csrfmiddlewaretoken']").val();
 const codeStatusText = document.querySelector('.code-status');
 const getCodeBtn = document.querySelector('.get-code');
-const orderNumbers = document.querySelectorAll('.order-number');
+const orderNumbers = document.querySelectorAll('.parent');
 const orderStatus = document.querySelectorAll('.order-row');
 
 function mobileMenuShow() {
@@ -135,16 +135,14 @@ userLogo.addEventListener("click", openLoginForm);
 
 for (let i = 0; i < orderNumbers.length && orderStatus.length; i++) {
     orderNumbers[i].addEventListener('click', () => {
-        for (elem of document.querySelectorAll('[data-target]')){
-            let test = jQuery.inArray(elem.dataset.target, orderStatus[i].classList)
-            if (test != -1){
-                let test_2 = document.getElementsByClassName(elem.dataset.target)
-                for (clas of test_2){
-                    clas.classList.toggle('active')
+        for (let child of orderStatus) {
+            let entry = jQuery.inArray(orderNumbers[i].dataset.target, child.classList)
+            if (entry !== -1) {
+                let arLine = document.getElementsByClassName(orderNumbers[i].dataset.target)
+                for (let line of arLine) {
+                    line.classList.toggle('active')
                 }
-
             }
-            // orderStatus[i].classList.toggle('active');
         }
     });
 }

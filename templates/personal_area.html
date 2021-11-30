@@ -92,7 +92,7 @@
 				</thead>
 				<tbody class="table-body">
 				{% for order in user.order_set.all %}
-					<tr class="table-row" data-target="{{ order.num_order }}">
+					<tr class="table-row parent" data-target="{{ order.num_order }}">
 						<td class="table-box">
 							<span class="table-text order-number">{{ order.num_order }}</span>
 						</td>
@@ -106,7 +106,7 @@
 						</td>
 						<td class="table-box">
 							<span class="table-text">
-								{% if order.payment_state %}
+								{% if not order.payment_state %}
 									<a href="#" class="table-pay">
 									Оплатить
 									</a>
@@ -116,7 +116,7 @@
 							</span>
 						</td>
 						<td class="table-box">
-							{% with order.stateorder_set.last as state %}
+							{% with order.stateorder_set.first as state %}
 								<span class="table-text ">{{ state.status }}</span>
 							{% endwith %}
 						</td>
@@ -132,10 +132,16 @@
 								<span>{{ state.date_time }}</span>
 							</td>
 							<td class="table-box" colspan="3">
-								<span>{{ state.status}}</span>
+								<span>{{ state.status }}</span>
 							</td>
 						</tr>
 					{% endfor %}
+					{% empty %}
+					<tr class="table-row" data-target="{{ order.num_order }}">
+						<td class="table-box" colspan="6">
+							<span class="table-text empty">Нет ни одного заказа</span>
+						</td>
+					</tr>
 				{% endfor %}
 				</tbody>
 			</table>

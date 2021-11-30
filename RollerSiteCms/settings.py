@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'login',
+    'login.apps.LoginConfig',
     'login.apps.CMSConfig',
     'menus',
     'treebeard',
@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'djangocms_style',
     'djangocms_googlemap',
     'djangocms_video',
-    'djangocms_snippet',
+    'login.apps.SnippetConfig',
     'rollercms',
     'orders',
 ]
@@ -118,6 +118,11 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    # 'django.contrib.auth.backends.ModelBackend',
+    'login.backends.MyBackend',
+)
 
 WSGI_APPLICATION = 'RollerSiteCms.wsgi.application'
 
@@ -237,4 +242,3 @@ CMS_TEMPLATES = (
     ('personal_area.html', 'Личный кабинет'),
     # ('blog.html', 'Блог'),
 )
-
