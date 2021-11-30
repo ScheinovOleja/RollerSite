@@ -1,0 +1,19 @@
+{% load sekizai_tags thumbnail static %}
+<div class="index-columns container pm">
+		<section class="place">
+			<h3 class="place-title">{{ instance.city }}</h3>
+			<p class="place-descr">
+				<span class="place-address">{{ instance.address }}</span>
+				<span class="place-phone"><a class="place-link" href="tel:{{ instance.phone }}">{{ instance.phone }}</a></span>
+				<span class="place-email"><a class="place-link" href="mailto:{{ instance.email }}">{{ instance.email }}</a></span>
+			</p>
+		</section>
+		<section class="map">
+			<iframe
+					class="map-location"
+					src="{{ instance.map_src }}">
+			></iframe>
+		</section>
+	</div>
+
+{#https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d291.00119179223447!2d34.361201401765165!3d61.75418523895946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46a1ed064b4314d1%3A0x4c4ce154cde2f719!2z0YPQuy4g0K3QvdGC0YPQt9C40LDRgdGC0L7QsiwgMTUsINCf0LXRgtGA0L7Qt9Cw0LLQvtC00YHQuiwg0KDQtdGB0L8uINCa0LDRgNC10LvQuNGPLCAxODUwMjY!5e0!3m2!1sru!2sru!4v1636635705588!5m2!1sru!2sru#}
