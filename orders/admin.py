@@ -40,7 +40,6 @@ class OrderAdmin(admin.ModelAdmin):
             if last_order_for_current_manager is None:
                 initials_manager = "".join(word[0].upper() for word in request.user.get_full_name().split())
                 obj.num_order = f'{initials_manager}01/{datetime.now().date().strftime("%d.%m.%y")}'
-
             else:
                 date = last_order_for_current_manager.num_order.split('/')[1]
                 number = last_order_for_current_manager.num_order.split('/')[0]
@@ -87,7 +86,7 @@ class OrderAdmin(admin.ModelAdmin):
                     form.instance.payment_state = True
                 else:
                     form.instance.payment_state = False
-            except:
+            except Exception as err:
                 pass
             form.instance.save()
         super().save_formset(request, form, formset, change)
