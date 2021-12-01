@@ -3,7 +3,6 @@ from datetime import datetime
 from django.contrib import admin
 
 # Register your models here.
-import orders
 from orders.models import Order, StateOrder
 
 
@@ -93,7 +92,3 @@ class OrderAdmin(admin.ModelAdmin):
 
     get_user_name.short_description = 'Заказчик'
     get_manager_name.short_description = 'Менеджер'
-
-
-admin.site.register(Order, OrderAdmin)
-# admin.site.register(StateOrder, OrderStateAdmin)

@@ -2,10 +2,7 @@
 from django.contrib import admin
 from sorl.thumbnail.admin import AdminInlineImageMixin
 
-from rollercms.models import Photo, Gallery
-
-
-# from .forms import CustomUserCreationForm, CustomUserChangeForm
+from rollercms.models import Photo
 
 
 class PhotoInline(AdminInlineImageMixin, admin.TabularInline):
@@ -15,14 +12,3 @@ class PhotoInline(AdminInlineImageMixin, admin.TabularInline):
 
 class GalleryAdmin(admin.ModelAdmin):
     inlines = [PhotoInline]
-
-
-# class CustomUserAdmin(UserAdmin):
-#     add_form = CustomUserCreationForm
-#     form = CustomUserChangeForm
-#     model = CustomUser
-#     list_display = ['email', 'username', ]
-
-
-admin.site.register(Gallery, GalleryAdmin)
-# admin.site.register(CustomUser, CustomUserAdmin)

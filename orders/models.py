@@ -15,20 +15,8 @@ STATUSES = (
 )
 
 
-def get_new_default():
-    if StateOrder.objects.all().count() == 0:
-        new_order_default = STATUSES[0][0]
-    else:
-        new_order_default = StateOrder.objects.all().aggregate(Max('status'))
-        index = STATUSES.index(
-            (int(new_order_default['status__max']), STATUSES[int(new_order_default['status__max'])][1])
-        )
-        new_order_default = STATUSES[index + 1][0]
-    return new_order_default
-
-
 class StateOrder(models.Model):
-    status = models.CharField(max_length=64, choices=STATUSES, default=get_new_default, verbose_name='Статус заказа')
+    status = models.CharField(max_length=64, choices=STATUSES, default=STATUSES[0][0], verbose_name='Статус заказа')
     date_time = models.DateTimeField(verbose_name='Дата и время статуса', auto_now_add=True)
     order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, blank=True,
                               verbose_name='Заказ')

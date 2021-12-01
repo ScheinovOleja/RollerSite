@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'djangocms_admin_style',
     'django.contrib.admin',
-    'django.contrib.auth',
+    'login.apps.MyAuthConfig',
     'django.contrib.contenttypes',
     'django.contrib.sites',
     'django.contrib.sitemaps',
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'treebeard',
     'sekizai',
     'djangocms_text_ckeditor',
-    'filer',
+    'login.apps.FilerConfig',
     'easy_thumbnails',
     'mptt',
     'djangocms_bootstrap4',
@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'login.apps.SnippetConfig',
     'rollercms',
     'orders',
+    'personal_area',
 ]
 
 AUTH_USER_MODEL = 'login.MyUser'

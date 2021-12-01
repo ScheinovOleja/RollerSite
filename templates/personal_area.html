@@ -160,26 +160,27 @@
 			<div class="personal-settings-wrapper">
 				<div class="setting-left">
 					<h3 class="setting-title">Изменить данные:</h3>
-					<form action="#" class="settings-form">
+					<form class="settings-form" method="post">
+						{% csrf_token %}
 						<label>
 							Ваш email:
-							<input type="email" class="personal-email input"/>
+							<input type="email" class="personal-email input" name="email"/>
 						</label>
 						<label>
 							Ваш текущий пароль:
-							<input type="password" class="personal-oldPassword input"/>
+							<input type="password" class="personal-oldPassword input" name="cur_pass"/>
 						</label>
 						<label>
 							Новый пароль:
-							<input type="password" class="personal-newPassword input"/>
+							<input type="password" class="personal-newPassword input" name="pass1"/>
 						</label>
 						<label>
 							Потверждение пароля:
-							<input type="password" class="personal-readyPassword input"/>
+							<input type="password" class="personal-readyPassword input" name="pass2"/>
 						</label>
 						<label class="personal-code-label">
 							Код подверждения:
-							<input type="text" class="personal-code input"/>
+							<input type="text" class="personal-code input" name="code"/>
 							<a class="get-code small-btn">Получить код</a>
 							<span class="code-status"
 							>На ваш телефон было выслано сообщение. Введите в поле выше
