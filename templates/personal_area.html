@@ -9,8 +9,9 @@
 			<ul class="tabs-list">
 				<li class="tabs-item">
 					<button
-							class="tabs-button tab-link active accordion"
+							class="tabs-button tab-link accordion"
 							onclick="openTab(event, 'personal-information')"
+							id="personal-information-tab"
 					>
 						Личная информация
 					</button>
@@ -19,6 +20,7 @@
 					<button
 							class="tabs-button tab-link accordion"
 							onclick="openTab(event, 'history')"
+							id="history-tab"
 					>
 						История заказов
 					</button>
@@ -27,6 +29,7 @@
 					<button
 							class="tabs-button tab-link accordion"
 							onclick="openTab(event, 'personal-settings')"
+							id="personal-settings-tab"
 					>
 						Настройки
 					</button>
@@ -35,7 +38,7 @@
 		</nav>
 	</div>
 	<main class="main container">
-		<button class="accordeon accordeon-btn tabs-button b1">
+		<button class="accordeon accordeon-btn tabs-button b1" id="personal-information-tab">
 			Личная информация
 		</button>
 		<section
@@ -75,7 +78,7 @@
 				</ul>
 			</div>
 		</section>
-		<button class="accordeon accordeon-btn tabs-button b2">
+		<button class="accordeon accordeon-btn tabs-button b2" id="history-tab">
 			История заказов
 		</button>
 		<section class="history tab-content panel" id="history">
@@ -117,7 +120,11 @@
 						</td>
 						<td class="table-box">
 							{% with order.stateorder_set.first as state %}
-								<span class="table-text ">{{ state.status }}</span>
+								{% if order.is_cancel %}
+									<span class="table-text ">Заказ отменен</span>
+								{% else %}
+									<span class="table-text ">{{ state.get_status_display }}</span>
+								{% endif %}
 							{% endwith %}
 						</td>
 						<td class="table-box">
@@ -132,11 +139,11 @@
 								<span>{{ state.date_time }}</span>
 							</td>
 							<td class="table-box" colspan="3">
-								<span>{{ state.status }}</span>
+								<span>{{ state.get_status_display }}</span>
 							</td>
 						</tr>
 					{% endfor %}
-					{% empty %}
+				{% empty %}
 					<tr class="table-row" data-target="{{ order.num_order }}">
 						<td class="table-box" colspan="6">
 							<span class="table-text empty">Нет ни одного заказа</span>
@@ -146,17 +153,20 @@
 				</tbody>
 			</table>
 		</section>
-		<button class="accordeon accordeon-btn tabs-button b3">Настройки</button>
+		<button class="accordeon accordeon-btn tabs-button b3" id="personal-settings-tab">Настройки</button>
 		<section
 				class="container personal-settings tab-content tab-link panel"
 				id="personal-settings"
 		>
-			<svg width="110" height="110" viewBox="0 0 32 32" class="personal-img">
+			<svg width="110" height="110" viewBox="0 0 32 32" class="personal-img" id="update-js">
 				{{ user.avatar|safe }}
 			</svg>
-			<button class="btn generate-personalImg" type="button">
-				Сгенерировать
-			</button>
+			<form method="post" onsubmit="ChangeAvatar();return false;">
+				{% csrf_token %}
+				<button class="btn generate-personalImg" type="submit" name="change_avatar">
+					Сгенерировать
+				</button>
+			</form>
 			<div class="personal-settings-wrapper">
 				<div class="setting-left">
 					<h3 class="setting-title">Изменить данные:</h3>
@@ -166,28 +176,39 @@
 							Ваш email:
 							<input type="email" class="personal-email input" name="email"/>
 						</label>
+						{% for message in messages %}
+							{% if "incorrect_email" in message.tags %}
+								<div class="message {{ message.tags }}">
+									{{ message }}
+								</div>
+							{% endif %}
+						{% endfor %}
 						<label>
 							Ваш текущий пароль:
 							<input type="password" class="personal-oldPassword input" name="cur_pass"/>
 						</label>
+						{% for message in messages %}
+							{% if "incorrect_pass" in message.tags %}
+								<div class="message {{ message.tags }}">
+									{{ message }}
+								</div>
+							{% endif %}
+						{% endfor %}
 						<label>
 							Новый пароль:
 							<input type="password" class="personal-newPassword input" name="pass1"/>
 						</label>
+						{% for message in messages %}
+							{% if "pass_mismatch" in message.tags %}
+								<div class="message {{ message.tags }}">
+									{{ message }}
+								</div>
+							{% endif %}
+						{% endfor %}
 						<label>
 							Потверждение пароля:
 							<input type="password" class="personal-readyPassword input" name="pass2"/>
 						</label>
-						<label class="personal-code-label">
-							Код подверждения:
-							<input type="text" class="personal-code input" name="code"/>
-							<a class="get-code small-btn">Получить код</a>
-							<span class="code-status"
-							>На ваш телефон было выслано сообщение. Введите в поле выше
-                  код из сообщения!</span
-							>
-						</label>
-
 						<button class="btn-save btn" type="submit">Сохранить</button>
 					</form>
 				</div>

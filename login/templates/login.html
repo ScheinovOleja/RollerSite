@@ -27,6 +27,11 @@
 	<div class="input-login-form">
 		<input type="submit" value="Войти">
 	</div>
+	{% for message in messages %}
+		<div class="message {{ message.tags }}">
+			{{ message }}
+		</div>
+	{% endfor %}
 </form>
 </body>
 <script src="{% static "js/jquery-3.6.0.min.js" %}"></script>

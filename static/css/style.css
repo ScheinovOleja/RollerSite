@@ -1040,6 +1040,25 @@ hr {
     color: var(--basic-light-dark);
 }
 
+.message {
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
+}
+
+.incorrect_pass {
+    text-align: left;
+}
+
+.pass_mismatch {
+    text-align: left;
+}
+
+.incorrect_email {
+    text-align: left;
+}
+
+
 @media (min-width: 320px) and (max-width: 992px) {
     .page-body .header-hamburger {
         display: block;

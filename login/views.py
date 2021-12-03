@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from RollerSiteCms.settings import LOGIN_REDIRECT_URL
@@ -26,7 +27,8 @@ class MyLoginView(LoginView):
                     login(request, user)
                     return HttpResponseRedirect(LOGIN_REDIRECT_URL)
             else:
-                return HttpResponse(status=404)
+                messages.error(request, 'Неверный логин или пароль!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class MyLogoutView(LogoutView):

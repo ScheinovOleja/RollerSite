@@ -1,6 +1,4 @@
-from django.contrib.sessions.models import Session
 from django.contrib.auth.backends import ModelBackend
-from RollerSiteCms import settings
 from login.models import MyUser
 
 
@@ -14,7 +12,11 @@ class MyBackend(ModelBackend):
             phone = kwargs['phone']
         password = kwargs['password']
         try:
-            regex = r'^(8|\+7)' + '(' + phone[1:] + ')'
+            if '+7' in phone:
+                index = 2
+            else:
+                index = 1
+            regex = r'^(8|\+7)' + '(' + phone[index:] + ')'
             user = MyUser.objects.get(phone__regex=regex)
             if user.check_password(password) is True:
                 return user

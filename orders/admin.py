@@ -1,27 +1,75 @@
 from datetime import datetime
 
 from django.contrib import admin
-
 # Register your models here.
-from orders.models import Order, StateOrder
+from django.forms import BaseInlineFormSet
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
+from django.utils.safestring import mark_safe
+
+from orders.models import Order, StateOrder, STATUSES
 
 
-class OrderStateInline(admin.StackedInline):
+class MyDefaultFormSet(BaseInlineFormSet):
+    @property
+    def empty_form(self):
+        form = super(MyDefaultFormSet, self).empty_form
+        try:
+            all_status = [my_form.initial['status'] for my_form in self.forms]
+            new_state = max(all_status)
+        except ValueError as err:
+            new_state = -1
+        except KeyError as err:
+            new_state = -1
+        form.fields['status'].initial = new_state + 1
+        return form
+
+
+class OrderStateInline(admin.TabularInline):
+    formset = MyDefaultFormSet
     model = StateOrder
     extra = 0
 
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        if not obj:
+            return False
+        if obj.stateorder_set.all().count() >= 6 or obj.is_cancel:
+            return False
+        else:
+            return True
+
+    def has_delete_permission(self, request, obj=None):
+        if not obj:
+            return False
+        if obj.stateorder_set.all().count() >= 6 or obj.is_cancel:
+            return False
+        else:
+            return True
+
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state']
-    fields = ['user', 'order_price', 'payment_state', 'contract']
-    list_filter = ['payment_state']
+    list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state', 'cancel_order']
+    fields = ['user', 'order_price', 'payment_state', 'contract', 'is_cancel']
+    list_filter = ['payment_state', 'is_cancel']
+    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order']
+    search_fields = ['num_order']
     inlines = [OrderStateInline]
 
-    def get_user_name(self, obj):
-        return f'{obj.user.first_name} {obj.user.last_name}'
-
-    def get_manager_name(self, obj):
-        return f'{obj.manager.first_name} {obj.manager.last_name}'
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        order = Order.objects.get(id=object_id)
+        extra_context = extra_context or {}
+        if order.is_cancel:
+            for field in self.get_fields(request, order):
+                if field not in self.readonly_fields:
+                    self.readonly_fields.append(field)
+        else:
+            self.readonly_fields.clear()
+            for field in ['payment_state', 'is_cancel', 'cancel_order']:
+                self.readonly_fields.append(field)
+        return super(OrderAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
     def delete_queryset(self, request, queryset):
         for order in queryset:
@@ -29,6 +77,19 @@ class OrderAdmin(admin.ModelAdmin):
                 state.delete()
             order.delete()
         super(OrderAdmin, self).delete_queryset(request, queryset)
+
+    def get_fields(self, request, obj=None):
+        fields = list(super(OrderAdmin, self).get_fields(request, obj))
+        try:
+            if any([state.status == 2 for state in obj.stateorder_set.all()]):
+                fields.append('terms_of_readiness')
+                fields.append('installation_time')
+            else:
+                fields.remove('terms_of_readiness')
+                fields.remove('installation_time')
+        except (AttributeError, ValueError) as err:
+            pass
+        return [f for f in fields]
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -51,44 +112,54 @@ class OrderAdmin(admin.ModelAdmin):
             obj.manager = request.user
             obj.save()
             StateOrder.objects.create(
+                status=STATUSES[0][0],
+                order=obj
+            )
+            StateOrder.objects.create(
+                status=STATUSES[1][0],
                 order=obj
             )
         super(OrderAdmin, self).save_model(request, obj, form, change)
 
     def save_formset(self, request, form, formset, change):
-        if not change:
-            last_order_for_current_manager = Order.objects.filter(stateorder__date_time__day=datetime.now().date().day,
-                                                                  stateorder__date_time__month=datetime.now().date().month,
-                                                                  stateorder__date_time__year=datetime.now().date().year
-                                                                  ).last()
-            if last_order_for_current_manager is None:
-                initials_manager = "".join(word[0].upper() for word in request.user.get_full_name().split())
-                form.instance.num_order = f'{initials_manager}01/{datetime.now().date().strftime("%d.%m.%y")}'
-
+        try:
+            if any([state.cleaned_data['status'] == 2 and not state.cleaned_data['DELETE'] for state in formset]):
+                form.instance.payment_state = True
             else:
-                date = last_order_for_current_manager.num_order.split('/')[1]
-                number = last_order_for_current_manager.num_order.split('/')[0]
-                initials = "".join(word for word in number if word.isalpha())
-                new_number = f'{int("".join(word for word in number if word.isdigit())) + 1}'.split()
-                if len(new_number) == 1:
-                    new_number.insert(0, '0')
-                new_number = initials + ''.join(word for word in new_number)
-                form.instance.num_order = f'{new_number}/{date}'
-            form.instance.manager = request.user
-            form.instance.save()
-            StateOrder.objects.create(
-                order=form.instance
-            )
-        else:
-            try:
-                if any([state.cleaned_data['status'] == 'Заказ оплачен' and not state.cleaned_data['DELETE'] for state in formset]):
-                    form.instance.payment_state = True
-                else:
-                    form.instance.payment_state = False
-            except Exception as err:
-                pass
-            form.instance.save()
+                form.instance.payment_state = False
+        except Exception as err:
+            pass
+        form.instance.save()
         super().save_formset(request, form, formset, change)
+
+    def cancel_order(self, obj):
+        if obj.is_cancel:
+            url = '<span>Заказ отменен</span>'
+        else:
+            url = f'<a href="{reverse(f"admin:cancel", args=(obj.id,))}">Отменить заказ</a>'
+        return mark_safe(url)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        shard_urls = [path(r'cancel/<pk>', self.admin_site.admin_view(self.cancel), name="cancel"),
+                      ]
+        return shard_urls + urls
+
+    def cancel(self, request, pk):
+        order = Order.objects.get(id=pk)
+        order.is_cancel = True
+        order.save()
+        return HttpResponseRedirect(reverse(f'admin:orders_order_changelist'))
+
+    def get_user_name(self, obj):
+        return f'{obj.user.first_name} {obj.user.last_name}'
+
+    def get_manager_name(self, obj):
+        return f'{obj.manager.first_name} {obj.manager.last_name}'
 
     get_user_name.short_description = 'Заказчик'
     get_manager_name.short_description = 'Менеджер'
+    cancel_order.short_description = 'Отмена заказа'
+
+
+admin.site.register(Order, OrderAdmin)

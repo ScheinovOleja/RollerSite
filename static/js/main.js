@@ -10,7 +10,6 @@ const modalClose = document.querySelector('.close-modal');
 const userLogo = document.querySelector('.user-logo');
 const csrfToken = $("input[name='csrfmiddlewaretoken']").val();
 const codeStatusText = document.querySelector('.code-status');
-const getCodeBtn = document.querySelector('.get-code');
 const orderNumbers = document.querySelectorAll('.parent');
 const orderStatus = document.querySelectorAll('.order-row');
 
@@ -138,22 +137,36 @@ for (let i = 0; i < orderNumbers.length && orderStatus.length; i++) {
         for (let child of orderStatus) {
             let entry = jQuery.inArray(orderNumbers[i].dataset.target, child.classList)
             if (entry !== -1) {
-                let arLine = document.getElementsByClassName(orderNumbers[i].dataset.target)
-                for (let line of arLine) {
-                    line.classList.toggle('active')
-                }
+                child.classList.toggle('active')
             }
         }
     });
 }
 
-getCodeBtn.addEventListener('click', () => {
-    codeStatusText.classList.add('active');
-});
+{
+    let tab;
+    let myUrl = window.location.href.split('#')[1];
+    if (myUrl === undefined) {
+        tab = document.getElementById('personal-information-tab');
+    } else {
+        tab = document.getElementById(myUrl);
+    }
+    tabcontent = document.getElementsByClassName('tab-content');
+    tab.className += ' active';
+    for (let i = 0; i < tabcontent.length; i++) {
+        let content = jQuery.inArray(tab.id.split('-tab')[0], tabcontent[i].classList)
+        if (content === -1) {
+            tabcontent[i].style.display = 'none';
+        } else {
+            tabcontent[i].style.display = 'block';
+        }
+    }
+}
+
 
 function openTab(evt, tabName) {
     let i, tabcontent, tablinks;
-
+    window.history.replaceState({}, '', '#' + tabName + '-tab');
     tabcontent = document.getElementsByClassName('tab-content');
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = 'none';
@@ -192,4 +205,19 @@ for (let item of accButtons) {
             accContents[1].classList.remove('mobiled');
         }
     })
+}
+
+
+function ChangeAvatar() {
+    $.ajax({
+        type: "POST",
+        method: "POST",
+        headers: {'X-CSRFToken': csrfToken},
+        mode: 'same-origin',
+        url: "change_avatar/",
+        success: function (status) {
+            location.reload();
+        }
+    });
+    return false;
 }

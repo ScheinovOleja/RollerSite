@@ -1,21 +1,9 @@
 # Register your models here.
-from cms.admin.pageadmin import PageAdmin, PageTypeAdmin
-from cms.admin.useradmin import PageUserAdmin
-from cms.models import PageUser, PageUserGroup, Page, PageType
 from django.contrib import admin
-from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
-from djangocms_snippet.admin import SnippetAdmin
-from djangocms_snippet.models import Snippet
 
-from orders.admin import OrderAdmin
-from orders.models import Order
-from rollercms.admin import GalleryAdmin
-from rollercms.models import Gallery
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import MyUser
 
@@ -55,9 +43,3 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(MyUser, CustomUserAdmin)
-admin.site.register(Order, OrderAdmin)
-
-# apps.get_model('login.CustomGroup')._meta.app_label = 'login'
-# admin.site.unregister(PageUser)
-# admin.site.unregister(PageUserGroup)
-
