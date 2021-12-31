@@ -3,6 +3,7 @@ from django.db import models
 from RollerSiteCms import settings
 
 # Create your models here.
+from login.models import MyManager
 
 STATUSES = (
     (0, 'Выезд на замер'),
@@ -24,17 +25,19 @@ class StateOrder(models.Model):
 
     class Meta:
         ordering = ['-date_time']
-        verbose_name = 'Статусы заказа'
-        verbose_name_plural = 'Статусы заказа'
+        verbose_name = 'Статус заказа'
+        verbose_name_plural = 'Все статусы заказов'
 
     def __str__(self):
         return ''
 
 
 class Order(models.Model):
+    objects = MyManager()
+
     class Meta:
-        verbose_name = 'Заказы'
-        verbose_name_plural = 'Заказы'
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Все заказы'
 
     CANCEL_STATUS = (
         (True, 'Заказ отменен'),
@@ -49,7 +52,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False, blank=True,
                              verbose_name='Заказчик', limit_choices_to={'is_staff': False})
     num_order = models.CharField(max_length=64, unique=True, verbose_name='Номер заказа')
-    order_price = models.FloatField(verbose_name='Сумма заказа')
+    order_price = models.FloatField(verbose_name='Сумма заказа', default=0.0)
     payment_state = models.BooleanField(choices=STATUS_PAYMENT, default=STATUS_PAYMENT[1][0],
                                         verbose_name='Статус оплаты')
     contract = models.FileField(upload_to='contracts', verbose_name='Договор')
@@ -57,7 +60,11 @@ class Order(models.Model):
                                 verbose_name='Менеджер', related_name='manager')
     terms_of_readiness = models.IntegerField(verbose_name='Срок готовности', null=True, blank=True)
     installation_time = models.IntegerField(verbose_name='Срок монтажа', null=True, blank=True)
+    extra_charge = models.FloatField(verbose_name='Наценка (руб.)', blank=True, null=False, default=0.0)
+    delivery_price = models.FloatField(verbose_name='Стоимость доставки (руб.)', blank=True, null=False, default=0.0)
+    installation_price = models.FloatField(verbose_name='Стоимость монтажа (руб.)', blank=True, null=False, default=0.0)
     is_cancel = models.BooleanField(verbose_name='Статус заказа', choices=CANCEL_STATUS, default=CANCEL_STATUS[1][0])
+    is_notified = models.BooleanField(verbose_name='Оповещен ли пользователь в соц сети')
 
     def __str__(self):
         return self.num_order + '/' + self.user.get_full_name()

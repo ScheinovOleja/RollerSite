@@ -1,14 +1,23 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import Manager
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 from .managers import UserManager
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
+    MESSENGERS = (
+        (0, 'Telegram'),
+        (1, 'Viber'),
+        (2, 'WhatsApp'),
+    )
+
+    objects = UserManager()
     phone_regex = RegexValidator(regex=r'^((8|\+7)[\-]?)?(\(?\d{3}\)?[\-]?)?[\d\-]{7,10}$',
                                  message="Номер телефона в формате 89123456789")
     phone = models.CharField(validators=[phone_regex], max_length=12, blank=True, unique=True,
@@ -22,7 +31,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
-    objects = UserManager()
+    preferred_social_network = models.IntegerField(choices=MESSENGERS, default=None, null=True,
+                                                   verbose_name='Мессенджер')
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -48,3 +58,30 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         super(MyUser, self).save(*args, **kwargs)
         return self
+
+
+class MyManager(Manager):
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
+
+
+class RegisterFromMessangers(models.Model):
+    objects = MyManager()
+
+    MESSENGERS = (
+        (0, 'Telegram'),
+        (1, 'Viber'),
+        (2, 'WhatsApp'),
+    )
+
+    user = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, null=True, verbose_name='Пользователь на сайте')
+    messenger = models.IntegerField(choices=MESSENGERS, verbose_name='Мессенджер')
+    id_messenger = models.CharField(verbose_name='ID пользователя в соцсети', max_length=100, unique=True)
+    phone_regex = RegexValidator(regex=r'^((8|\7)[\-]?)?(\(?\d{3}\)?[\-]?)?[\d\-]{7,10}$',
+                                 message="Номер телефона в формате 89123456789")
+    phone = models.CharField(validators=[phone_regex], max_length=12, blank=True, unique=False,
+                             verbose_name='Номер телефона')

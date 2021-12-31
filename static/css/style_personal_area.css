@@ -294,6 +294,54 @@
     height: 64px;
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
+}
+
+.social-icon svg{
+    transition: all .2s ease-in-out;
+}
+
+.disabled-social-icon path{
+    fill: #bbbbbb;
+}
+
+.disabled-social-icon {
+    pointer-events: none;
+}
+
+.telegram-active path{
+    fill: #0088cc;
+}
+
+.viber-active path {
+    fill: #665CAC;
+}
+
+.whatsapp-active path {
+    fill: #25D366;
+}
+
+.telegram-social-icon:hover path {
+    fill: #0088cc;
+}
+
+.viber-social-icon:hover path {
+    fill: #665CAC;
+}
+
+.whatsapp-social-icon:hover path {
+    fill: #25D366;
+}
+
+.social-icon:hover svg {
+    transform: scale(1.2);
+}
+
+.custom-radio {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: none;
 }
 
 .personal-identifier {
@@ -574,11 +622,14 @@
         display: block;
         width: 13px;
         height: 100%;
-        background: url('data:image/svg+xml, <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d= "M6 10L11.7735 0L0.226497 0L6 10ZM5 0V1H7V0L5 0Z" fill= "black" /> </svg> ') no-repeat; top: 50%; -webkit-transform: translateY(-30%);
+        background: url('data:image/svg+xml, <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d= "M6 10L11.7735 0L0.226497 0L6 10ZM5 0V1H7V0L5 0Z" fill= "black" /> </svg> ') no-repeat;
+        top: 50%;
+        -webkit-transform: translateY(-30%);
         transform: translateY(-30%);
         left: -14px;
         position: absolute;
     }
+
     .empty::before {
         content: '';
         display: block;

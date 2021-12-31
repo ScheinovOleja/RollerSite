@@ -221,3 +221,59 @@ function ChangeAvatar() {
     });
     return false;
 }
+
+const inpRadio = document.getElementsByName('social-radio');
+for (let i = 0; i < inpRadio.length; i++) {
+    inpRadio[i].addEventListener('click', () => {
+        if (inpRadio[i].checked) {
+            if (i === 0) {
+                socialIcon[i].classList.add('telegram-active')
+                socialIcon[1].classList.remove('viber-active')
+                socialIcon[2].classList.remove('whatsapp-active')
+            } else if (i === 1) {
+                socialIcon[0].classList.remove('telegram-active')
+                socialIcon[i].classList.add('viber-active')
+                socialIcon[2].classList.remove('whatsapp-active')
+            } else if (i === 2) {
+                socialIcon[0].classList.remove('telegram-active')
+                socialIcon[1].classList.remove('viber-active')
+                socialIcon[i].classList.add('whatsapp-active')
+            }
+        }
+        let network = inpRadio[i].value
+        if (inpRadio[i].type === "radio" && inpRadio[i].checked) {
+            let request = $.ajax({
+                type: "POST",
+                method: "POST",
+                headers: {'X-CSRFToken': csrfToken},
+                mode: 'same-origin',
+                data: {'network': network},
+                url: "change_social_network/",
+            });
+            request.fail(function () {
+                // alert('не успех')
+            });
+            request.done(function () {
+                // alert('успех')
+            });
+            return false;
+        }
+    });
+}
+
+const socialIcon = document.getElementsByClassName('social-icon')
+for (let i = 0; i < socialIcon.length; i++) {
+    if (inpRadio[i].disabled) {
+        socialIcon[i].classList.remove(socialIcon[i].classList.item(1));
+        socialIcon[i].classList.toggle('disabled-social-icon');
+    }
+    if (inpRadio[i].checked) {
+        if (i === 0) {
+            socialIcon[i].classList.add('telegram-active')
+        } else if (i === 1) {
+            socialIcon[i].classList.add('viber-active')
+        } else if (i === 2) {
+            socialIcon[i].classList.add('whatsapp-active')
+        }
+    }
+}

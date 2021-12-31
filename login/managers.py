@@ -1,5 +1,6 @@
 import requests
 from django.contrib.auth.models import BaseUserManager
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class UserManager(BaseUserManager):
@@ -24,3 +25,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
         return self._create_user(phone, password, **extra_fields)
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None

@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import viber_bot, wa_bot
+from .views import post, wa_bot
 
 urlpatterns = [
-    path('vibermsgget/', viber_bot),
+    path('vibermsgget/', post),
     path('wamsgget/', wa_bot),
 ]

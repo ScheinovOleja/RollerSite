@@ -36,6 +36,7 @@ urlpatterns += i18n_patterns(
     re_path('login_user/', authentication),
     re_path('webhook/', include('rollercms.urls')),
     re_path('^accounts/', include('login.urls')),
+    re_path('^ajax_calc/', include('orders.urls')),
     re_path("", include("cms.urls")),
 )
 

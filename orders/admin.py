@@ -7,13 +7,17 @@ from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
+from login.models import MyUser, RegisterFromMessangers
+from orders.general_func import date_by_add
 from orders.models import Order, StateOrder, STATUSES
+from products.models import ProductList
+from social_treatment.mailing import send_register_user
 
 
-class MyDefaultFormSet(BaseInlineFormSet):
+class MyOrderFormSet(BaseInlineFormSet):
     @property
     def empty_form(self):
-        form = super(MyDefaultFormSet, self).empty_form
+        form = super(MyOrderFormSet, self).empty_form
         try:
             all_status = [my_form.initial['status'] for my_form in self.forms]
             new_state = max(all_status)
@@ -25,8 +29,15 @@ class MyDefaultFormSet(BaseInlineFormSet):
         return form
 
 
+class MyProductFormSet(BaseInlineFormSet):
+    @property
+    def empty_form(self):
+        form = super(MyProductFormSet, self).empty_form
+        return form
+
+
 class OrderStateInline(admin.TabularInline):
-    formset = MyDefaultFormSet
+    formset = MyOrderFormSet
     model = StateOrder
     extra = 0
 
@@ -50,17 +61,33 @@ class OrderStateInline(admin.TabularInline):
             return True
 
 
+class ProductInline(admin.StackedInline):
+    formset = MyProductFormSet
+    model = ProductList
+    extra = 0
+    readonly_fields = ['price']
+    template = 'admin/orders/stacked.html'
+
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state', 'cancel_order']
-    fields = ['user', 'order_price', 'payment_state', 'contract', 'is_cancel']
+    fields = ['user', 'payment_state', 'contract', 'is_cancel', 'extra_charge', 'delivery_price',
+              'installation_price', 'order_price']
     list_filter = ['payment_state', 'is_cancel']
-    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order']
+    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order', 'order_price']
     search_fields = ['num_order']
-    inlines = [OrderStateInline]
+    inlines = [ProductInline, OrderStateInline]
+    change_form_template = 'admin/orders/change_form.html'
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         order = Order.objects.get(id=object_id)
+        state = order.stateorder_set.all().first()
         extra_context = extra_context or {}
+        if state.status == 5:
+            for field in self.get_fields(request, order):
+                if field not in self.readonly_fields:
+                    self.readonly_fields.append(field)
+            return super(OrderAdmin, self).change_view(request, object_id, extra_context=extra_context)
         if order.is_cancel:
             for field in self.get_fields(request, order):
                 if field not in self.readonly_fields:
@@ -131,6 +158,46 @@ class OrderAdmin(admin.ModelAdmin):
             pass
         form.instance.save()
         super().save_formset(request, form, formset, change)
+
+    def response_post_save_add(self, request, obj):
+        phone = obj.user.phone
+        if '+7' in phone:
+            index = 2
+        else:
+            index = 1
+        regex = r'^(8|7)' + '(' + phone[index:] + ')'
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
+        text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
+        send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        return super().response_post_save_add(request, obj)
+
+    def response_post_save_change(self, request, obj):
+        state = obj.stateorder_set.all().first()
+        phone = obj.user.phone
+        if '+7' in phone:
+            index = 2
+        else:
+            index = 1
+        regex = r'^(8|7)' + '(' + phone[index:] + ')'
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
+        text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n*{state.get_status_display()}*\n'
+        if state.status == 5:
+            if not obj.is_notified:
+                text = f"Ваш заказ *{obj.num_order}* установлен.\n\nПросим оставить вас отзыв следующим сообщением!\n" \
+                       f"*Чтобы оставить отзыв напишите */review* и номер заказа, после чего вводите текст отзыва.*\n\n" \
+                       f"Пример:\n\n" \
+                       f"/review АА01/01.01.21\nТекст отзыва"
+                obj.is_notified = True
+                obj.save()
+                send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+            return super().response_post_save_change(request, obj)
+        if obj.terms_of_readiness or obj.installation_time:
+            terms_of_readiness = date_by_add(obj.terms_of_readiness)
+            installation_time = date_by_add(obj.installation_time)
+            text += f'\nСрок готовности до {terms_of_readiness}.\n\n' \
+                    f'Срок монтажа до {installation_time}.'
+        send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        return super().response_post_save_change(request, obj)
 
     def cancel_order(self, obj):
         if obj.is_cancel:

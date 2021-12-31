@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 from social_treatment.mailing import send_register_user
-from .models import MyUser
+from .models import MyUser, RegisterFromMessangers
 
 
 class CustomUserCreationForm(forms.ModelForm):
@@ -26,11 +26,24 @@ class CustomUserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.password)
-        send_register_user(self.cleaned_data['phone'], self.password)
+        phone = self.cleaned_data['phone']
+        if '+7' in phone:
+            index = 2
+        else:
+            index = 1
+        regex = r'^(8|7)' + '(' + phone[index:] + ')'
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
         avatar = requests.get(
             url=f'https://avatars.dicebear.com/api/initials/{user.first_name}_{user.last_name}.svg?size=32')
         user.avatar = avatar.content.decode(encoding='utf-8').replace('\'', '')
         user.save()
+        text = f"Доброго времени суток!\n\n" \
+               f"Вы зарегистрированы на сайте example.com!\n" \
+               f"Ваши данные для входа на сайт:\n" \
+               f"Логин - *{phone}*,\n" \
+               f"Пароль - *{self.password}*.\n\n" \
+               f"Обязательно смените пароль!!"
+        send_register_user(phone, self.password, messenger_user, text)
         return user
 
 

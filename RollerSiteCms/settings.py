@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-4@l(prvpk)ds=+^o*3udfp6rh^+uvm_d&s5^odc#+vuqx**!)*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -73,6 +73,9 @@ INSTALLED_APPS = [
     'rollercms',
     'orders',
     'personal_area',
+    'reviews',
+    'purchases',
+    'products'
 ]
 
 AUTH_USER_MODEL = 'login.MyUser'
@@ -177,7 +180,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = ""
+STATIC_ROOT = ''
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),

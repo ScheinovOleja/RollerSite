@@ -102,6 +102,10 @@ ul {
 
 .main-header {
     padding: 10px 0;
+    /*position: fixed;*/
+    /*width: 100%;*/
+    /*z-index: 999;*/
+    /*background-color: #d9d9d9;*/
 }
 
 .main-header__logo {

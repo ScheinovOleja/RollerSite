@@ -14,7 +14,10 @@ from django.views import View
 class ChangePasswordOrEmail(View):
 
     def get(self, request):
-        return render(request, template_name='personal_area.html')
+        data = {'messengers': []}
+        for messenger in request.user.registerfrommessangers_set.all():
+            data['messengers'].append(messenger.messenger)
+        return render(request, template_name='personal_area.html', context={'context': data})
 
     def post(self, request):
         email = request.POST['email']
@@ -61,3 +64,19 @@ class ChangeAvatar(View):
             request.user.avatar = avatar.content.decode(encoding='utf-8').replace('\'', '')
             request.user.save()
             return HttpResponse(True)
+
+
+class ChangePreferredNetwork(View):
+
+    def post(self, request):
+        if request.is_ajax():
+            if request.POST['network'] == 'telegram':
+                request.user.preferred_social_network = 0
+            elif request.POST['network'] == 'viber':
+                request.user.preferred_social_network = 1
+            elif request.POST['network'] == 'whatsapp':
+                request.user.preferred_social_network = 2
+            else:
+                return HttpResponse(status=404)
+            request.user.save()
+            return HttpResponse(status=200)
