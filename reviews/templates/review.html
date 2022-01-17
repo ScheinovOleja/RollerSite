@@ -1,0 +1,62 @@
+{% extends 'MainPage.html' %}
+{% load static cms_tags menu_tags sekizai_tags %}
+{% block slick %}
+	<link rel="stylesheet" href="{% static 'css/slick_review.css' %}"/>
+{% endblock %}
+{% block css %}
+	<link rel="stylesheet" href="{% static 'css/style_blog.css' %}"/>
+{% endblock %}
+{% block content %}
+	<main class="reviews">
+		<div class="container">
+			<h1 class="reviews-title">Клиенты о нас</h1>
+			<ul class="reviews-list">
+				{% for review in reviews %}
+					<li class="reviews-item">
+						<svg
+								width="140"
+								height="140"
+								viewBox="0 0 32 32"
+{#								fill="none"#}
+{#								xmlns="http://www.w3.org/2000/svg"#}
+						>
+							{{ user.avatar|safe }}
+						</svg>
+						<p class="reviews-descr">
+							{{ review.review }}
+						</p>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</main>
+{% endblock %}
+{% block my_js %}
+	<script src="{% static "js/jquery-3.6.0.min.js" %}"></script>
+	<script src="{% static "js/slick.min.js" %}"></script>
+	<script src="{% static "js/main.js" %}"></script>
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $('.reviews-list').slick({
+                dots: true,
+                infinite: true,
+                swipeToSlide: true,
+                centerMode: true,
+                centerPadding: '80px',
+                arrows: false,
+                dotsClass: 'slick-dots-review',
+                adaptiveHeight: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 2,
+                        },
+                    },
+                ],
+            });
+        });
+	</script>
+{% endblock my_js %}
+{% render_block "js" %}

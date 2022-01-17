@@ -16,7 +16,8 @@ class CustomUserAdmin(UserAdmin):
     ordering = ['phone', ]
     fieldsets = (
         (None, {'fields': ('phone', 'password', 'avatar_image')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'patronymic', 'email', 'address')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'patronymic', 'email', 'address',
+                                         'additional_information')}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
@@ -25,7 +26,8 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('phone', 'first_name', 'last_name', 'patronymic', 'email', 'address'),
+            'fields': ('phone', 'first_name', 'last_name', 'patronymic', 'email', 'address',
+                       'additional_information'),
         }),
     )
     search_fields = ('phone', 'first_name', 'last_name', 'email')

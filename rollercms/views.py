@@ -3,7 +3,9 @@ import json
 import redis2
 from aiogram import Bot, types
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import TextMessage, ContactMessage
@@ -12,6 +14,7 @@ from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMe
 from login.models import RegisterFromMessangers, MyUser
 from orders.models import Order
 from reviews.models import Review
+from rollercms.models import Post
 
 bot_configuration = BotConfiguration(
     name='TestBot',
@@ -143,3 +146,23 @@ def post(request):
         if isinstance(viber_request, ViberMessageRequest):
             message_treatment(viber_request)
     return HttpResponse(status=200)
+
+
+def blog_get(request):
+    if request.method == 'GET':
+        all_post = Post.objects.all()
+        return render(request, 'blocks/blog.html', {'posts': all_post})
+
+
+class PostDetailView(DetailView):
+    model = Post
+    context_object_name = 'post'
+    template_name = 'blocks/post.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context['post'] = Post.objects.get(id=kwargs['object'].pk)
+        return context
+
+    def post(self, request, pk):
+        return self.get(request, pk)

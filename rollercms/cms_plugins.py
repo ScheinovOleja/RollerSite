@@ -2,7 +2,7 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext as _
 
-from .models import Slider, Tagline, CreditAndPartnership, BackCall, MyGoogleMap
+from .models import Slider, Tagline, CreditAndPartnership, BackCall, MyGoogleMap, MyLetterCompany, Post
 
 
 class SliderPlugin(CMSPluginBase):
@@ -71,9 +71,32 @@ class MyGoogleMapPlugin(CMSPluginBase):
         return context
 
 
+class MyLetterPlugin(CMSPluginBase):
+    module = _('Самодельные плагины')
+    name = _('Письмо компании')
+    render_template = "blocks/letter.html"
+    model = MyLetterCompany
+
+    def render(self, context, instance, placeholder):
+        context.update({'instance': instance})
+        return context
+
+
+# class Posts(CMSPluginBase):
+#     module = _('Самодельные плагины')
+#     name = _('Список постов')
+#     render_template = "blog.html"
+#     model = Post
+#
+#     def render(self, context, instance, placeholder):
+#         context.update({'instance': instance})
+#         return context
+
+
 plugin_pool.register_plugin(SliderPlugin)
 plugin_pool.register_plugin(TaglinePlugin)
 plugin_pool.register_plugin(CreditPlugin)
 plugin_pool.register_plugin(PartnershipPlugin)
 plugin_pool.register_plugin(BackCallPlugin)
 plugin_pool.register_plugin(MyGoogleMapPlugin)
+plugin_pool.register_plugin(MyLetterPlugin)

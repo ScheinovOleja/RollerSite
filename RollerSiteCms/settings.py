@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'treebeard',
     'sekizai',
     'djangocms_text_ckeditor',
+    'ckeditor',
     'login.apps.FilerConfig',
     'easy_thumbnails',
     'mptt',
@@ -195,6 +196,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CACHE_MIDDLEWARE_SECONDS = '3600'
 
+# Django-ckeditor
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
 # Django-cms settings
 # ___________________________________________________________________________________________________________________
 
@@ -244,5 +250,6 @@ CMS_PLACEHOLDER_CONF = {
 CMS_TEMPLATES = (
     ('MainPage.html', 'Базовый шаблон'),
     ('personal_area.html', 'Личный кабинет'),
+    ('blog.html', 'Блог')
     # ('blog.html', 'Блог'),
 )

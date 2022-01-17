@@ -27,6 +27,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30, blank=True, verbose_name='Фамилия')
     patronymic = models.CharField(max_length=40, blank=True, verbose_name='Отчество')
     address = models.CharField(max_length=255, blank=True, verbose_name='Адрес заказчика')
+    additional_information = models.CharField(max_length=255, blank=True, null=True,
+                                              verbose_name='Дополнительная информация')
     avatar = models.TextField('Аватар', max_length=99999)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
