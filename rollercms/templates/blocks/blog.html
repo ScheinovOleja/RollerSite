@@ -1,0 +1,24 @@
+{% extends 'MainPage.html' %}
+{% load static cms_tags menu_tags sekizai_tags %}
+{% block css %}
+	<link rel="stylesheet" href="{% static 'css/style_blog.css' %}"/>
+{% endblock %}
+{% block content %}
+	<main class="posts">
+		<div class="container">
+			<ul class="posts-list">
+				{% for post in posts %}
+					<li class="post-item">
+						<a href="{{ post.id }}">
+							<h2 class="posts-title">{{ post.title_post }}</h2>
+							<img src="/media/{{ post.image }}" alt="" class="post-img"/>
+							<p class="post-descr">
+								{{ post.short_description }}
+							</p>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</main>
+{% endblock content %}

@@ -8,8 +8,10 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap"
 		  rel="stylesheet"/>
+{% block slick %}
 	<link rel="stylesheet" type="text/css" href="{% static "css/slick.css" %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static "css/slick-theme.css" %}"/>
+{% endblock %}
 	<link rel="stylesheet" href="{% static "css/normalize.css" %}"/>
 	<link rel="stylesheet" href="{% static "css/style.css" %}"/>
 {% block css %}{% endblock %}
@@ -81,7 +83,7 @@
 						<a href="{% page_url "reviews" %}" class="navigation-link">Отзывы</a>
 					</li>
 					<li class="navigation-item">
-						<a href="{% page_url "about" %}" class="navigation-link">О компании</a>
+						<a href="{% page_url "stock" %}" class="navigation-link">Акции</a>
 					</li>
 					<li class="navigation-item">
 						<a href="{% page_url "contacts" %}" class="navigation-link">Контакты</a>
@@ -140,15 +142,15 @@
 				<div class="footer-projects">
 					<h4 class="footer-wrapper__title">О проекте:</h4>
 					<ul class="footer-list">
-						<li class="footer-item">
-							<a class="footer-link" href="{% page_url "about" %}">О компании</a>
-						</li>
+{#						<li class="footer-item">#}
+{#							<a class="footer-link" href="{% page_url "about" %}">О компании</a>#}
+{#						</li>#}
 						<li class="footer-item">
 							<a class="footer-link" href="{% page_url "stock" %}">Акции</a>
 						</li>
-						<li class="footer-item">
-							<a class="footer-link" href="{% page_url "dealers" %}">Дилерам</a>
-						</li>
+{#						<li class="footer-item">#}
+{#							<a class="footer-link" href="{% page_url "dealers" %}">Дилерам</a>#}
+{#						</li>#}
 						<li class="footer-item">
 							<a class="footer-link" href="{% page_url "contacts" %}">Контакты</a>
 						</li>
@@ -193,10 +195,7 @@
 					<h4 class="footer-wrapper__title">Сервисы:</h4>
 					<ul class="footer-list">
 						<li class="footer-item">
-							<a class="footer-link" href="{% page_url "calculator" %}">Калькулятор стоимости</a>
-						</li>
-						<li class="footer-item">
-							<a class="footer-link" href="#">Заказать обратный звонок</a>
+							<a class="footer-link" href="{% page_url "main" %}#back_call">Заказать обратный звонок</a>
 						</li>
 						<li class="footer-item">
 							<a class="footer-link" href="{% page_url "personal_area" %}">Личный кабинет</a>
@@ -204,9 +203,9 @@
 						<li class="footer-item">
 							<a class="footer-link" href="{% page_url "letter" %}">Написать письмо компании</a>
 						</li>
-						<li class="footer-item">
-							<a class="footer-link" href="#">Пользовательское соглашение</a>
-						</li>
+{#						<li class="footer-item">#}
+{#							<a class="footer-link" href="#">Пользовательское соглашение</a>#}
+{#						</li>#}
 					</ul>
 				</div>
 			</div>

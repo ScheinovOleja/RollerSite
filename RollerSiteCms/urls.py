@@ -38,6 +38,7 @@ urlpatterns += i18n_patterns(
     re_path('^accounts/', include('login.urls')),
     re_path('^ajax_calc/', include('orders.urls')),
     re_path("", include("cms.urls")),
+    re_path('ckeditor/', include('ckeditor_uploader.urls'))
 )
 
 # This is only needed when using runserver.

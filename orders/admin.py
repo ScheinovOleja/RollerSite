@@ -7,8 +7,10 @@ from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
+from RollerSiteCms.settings import MEDIA_URL
 from login.models import MyUser, RegisterFromMessangers
 from orders.general_func import date_by_add
+from orders.import_to_doc import get_context
 from orders.models import Order, StateOrder, STATUSES
 from products.models import ProductList
 from social_treatment.mailing import send_register_user
@@ -70,11 +72,11 @@ class ProductInline(admin.StackedInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state', 'cancel_order']
-    fields = ['user', 'payment_state', 'contract', 'is_cancel', 'extra_charge', 'delivery_price',
-              'installation_price', 'order_price']
+    list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state', 'cancel_order', 'download_doc']
+    fields = ['user', 'payment_state', 'is_cancel', 'extra_charge', 'delivery_price',
+              'installation_price', 'terms_of_readiness', 'installation_time', 'note', 'prepayment', 'order_price']
     list_filter = ['payment_state', 'is_cancel']
-    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order', 'order_price']
+    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order']
     search_fields = ['num_order']
     inlines = [ProductInline, OrderStateInline]
     change_form_template = 'admin/orders/change_form.html'
@@ -97,26 +99,6 @@ class OrderAdmin(admin.ModelAdmin):
             for field in ['payment_state', 'is_cancel', 'cancel_order']:
                 self.readonly_fields.append(field)
         return super(OrderAdmin, self).change_view(request, object_id, extra_context=extra_context)
-
-    def delete_queryset(self, request, queryset):
-        for order in queryset:
-            for state in order.stateorder_set.all():
-                state.delete()
-            order.delete()
-        super(OrderAdmin, self).delete_queryset(request, queryset)
-
-    def get_fields(self, request, obj=None):
-        fields = list(super(OrderAdmin, self).get_fields(request, obj))
-        try:
-            if any([state.status == 2 for state in obj.stateorder_set.all()]):
-                fields.append('terms_of_readiness')
-                fields.append('installation_time')
-            else:
-                fields.remove('terms_of_readiness')
-                fields.remove('installation_time')
-        except (AttributeError, ValueError) as err:
-            pass
-        return [f for f in fields]
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -168,7 +150,11 @@ class OrderAdmin(admin.ModelAdmin):
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
         messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
         text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
-        send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        try:
+            send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        except Exception as err:
+            pass
+        self.download(request, obj.id)
         return super().response_post_save_add(request, obj)
 
     def response_post_save_change(self, request, obj):
@@ -206,9 +192,14 @@ class OrderAdmin(admin.ModelAdmin):
             url = f'<a href="{reverse(f"admin:cancel", args=(obj.id,))}">Отменить заказ</a>'
         return mark_safe(url)
 
+    def download_doc(self, obj):
+        url = f'<a href="{reverse(f"admin:download", args=(obj.id,))}">Скачать спецификацию</a>'
+        return mark_safe(url)
+
     def get_urls(self):
         urls = super().get_urls()
         shard_urls = [path(r'cancel/<pk>', self.admin_site.admin_view(self.cancel), name="cancel"),
+                      path(r'download/<pk>', self.admin_site.admin_view(self.download), name="download")
                       ]
         return shard_urls + urls
 
@@ -217,6 +208,10 @@ class OrderAdmin(admin.ModelAdmin):
         order.is_cancel = True
         order.save()
         return HttpResponseRedirect(reverse(f'admin:orders_order_changelist'))
+
+    def download(self, request, pk):
+        file = get_context(pk)
+        return HttpResponseRedirect(MEDIA_URL + f'contracts/{file}')
 
     def get_user_name(self, obj):
         return f'{obj.user.first_name} {obj.user.last_name}'

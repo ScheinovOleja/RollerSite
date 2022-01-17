@@ -118,7 +118,7 @@ class ProductList(models.Model):
         verbose_name_plural = 'Все товары'
 
     objects = MyManager()
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=False, blank=False,
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False,
                               verbose_name='Заказ')
     type_construction = models.ForeignKey(TypeConstruction, on_delete=models.DO_NOTHING, null=False, blank=False,
                                           verbose_name='Тип конструкции')
@@ -141,3 +141,15 @@ class ProductList(models.Model):
 
     def __str__(self):
         return f'{self.type_construction} - {self.material} - {self.price}'
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        width = self.width
+        height = self.height
+        count = self.count
+        mult = self.hardware_color.multiplication
+        type_construct = self.type_construction_id
+        grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
+        self.price = grid_price.price * mult * count
+        super(ProductList, self).save(force_insert=False, force_update=False, using=None,
+                                      update_fields=None)

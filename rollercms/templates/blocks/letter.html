@@ -1,0 +1,67 @@
+{% load sekizai_tags thumbnail static %}
+{% block css %}
+	<link rel="stylesheet" href="{% static 'css/style_blog.css' %}"/>
+{% endblock %}
+<section class="letter">
+	<div class="container">
+		<form action="" class="letter-form">
+			<div class="letter-header">
+				<div class="letter-left">
+					<label class="letter-l">
+						Имя
+						<input
+								class="letter-input"
+								type="text"
+								name="name"
+								id="user-name"
+								placeholder="Введите ваше имя"
+						/>
+					</label>
+					<label class="letter-l mt30">
+						Телефон
+						<input
+								class="letter-input"
+								type="tel"
+								name="tel"
+								id="user-tel"
+								placeholder="Введите ваш номер телефона"
+						/>
+					</label>
+					<label class="letter-l mt30">
+						Email
+						<input
+								class="letter-input"
+								type="email"
+								name="mail"
+								id="user-email"
+								placeholder="Введите ваш email"
+						/>
+					</label>
+				</div>
+				<div class="letter-right">
+					<div class="letter-note">
+						<h4 class="note-title">Обратите внимание!</h4>
+						<p class="note-info">
+							Мы ответим на ваше письмо в течении ближайшей недели. Ответ
+							придет вам на почту, которую вы указали при обращении
+						</p>
+					</div>
+				</div>
+			</div>
+			<label for="letter-textarea" class="letter-l mt30">
+				Текст письма
+				<textarea
+						placeholder="Введите текст письма"
+						name="user-message"
+						id="user-message"
+						style="resize: none"
+				></textarea>
+			</label>
+			<span class="submit-info"
+			>Спасибо. Ваше письмо получено. Ожидайте ответ в течение недели на
+            указанный email</span
+			>
+			<button class="letter-submit">Отправить</button>
+		</form>
+	</div>
+</section>
