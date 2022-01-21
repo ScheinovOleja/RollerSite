@@ -74,9 +74,10 @@ class ProductInline(admin.StackedInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['num_order', 'get_user_name', 'get_manager_name', 'payment_state', 'cancel_order', 'download_doc']
     fields = ['user', 'payment_state', 'is_cancel', 'extra_charge', 'delivery_price',
-              'installation_price', 'terms_of_readiness', 'installation_time', 'note', 'prepayment', 'order_price']
+              'installation_price', 'terms_of_readiness', 'installation_time', 'note', 'prepayment', 'order_price',
+              'contract']
     list_filter = ['payment_state', 'is_cancel']
-    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order']
+    readonly_fields = ['payment_state', 'is_cancel', 'cancel_order', 'contract']
     search_fields = ['num_order']
     inlines = [ProductInline, OrderStateInline]
     change_form_template = 'admin/orders/change_form.html'
@@ -150,11 +151,11 @@ class OrderAdmin(admin.ModelAdmin):
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
         messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
         text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
+        self.download(request, obj.id)
         try:
-            send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+            send_register_user(phone=phone, messenger_user=messenger_user, text=text, file=obj.contract)
         except Exception as err:
             pass
-        self.download(request, obj.id)
         return super().response_post_save_add(request, obj)
 
     def response_post_save_change(self, request, obj):

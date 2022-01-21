@@ -6,11 +6,11 @@ from django.http import HttpResponse
 from rollercms.views import send_register_from_site
 
 
-def send_register_user(phone, password=None, messenger_user=None, text=None):
+def send_register_user(phone, password=None, messenger_user=None, text=None, file=None):
     if messenger_user.messenger == 0:
         pass
     elif messenger_user.messenger == 1:
-        send_register_from_site(phone, messenger_user.id_messenger, text)
+        send_register_from_site(phone, messenger_user.id_messenger, text, file)
     elif messenger_user.messenger == 2:
         loop = asyncio.new_event_loop()
         bot_token = '1753538352:AAGW-cAk2fAT4n5rzp5tnljZIeWa6mD9udo'

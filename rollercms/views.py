@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
-from viberbot.api.messages import TextMessage, ContactMessage
+from viberbot.api.messages import TextMessage, ContactMessage, FileMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 
 from login.models import RegisterFromMessangers, MyUser
@@ -25,8 +25,10 @@ bot_configuration = BotConfiguration(
 viber = Api(bot_configuration)
 
 
-def send_register_from_site(phone, viber_id, text):
+def send_register_from_site(phone, viber_id, text, file):
     message = TextMessage(text=text)
+    viber.send_messages(viber_id, message)
+    message = FileMessage(media=file, file_name='Тест.docx')
     viber.send_messages(viber_id, message)
 
 

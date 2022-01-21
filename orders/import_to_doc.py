@@ -2,6 +2,7 @@ import os
 import pathlib
 from pprint import pprint
 
+from django.core.files import File
 from django.http import HttpResponse
 from docxtpl import DocxTemplate
 
@@ -38,4 +39,7 @@ def get_context(pk):
     doc.render(context)
     save_file = os.path.abspath(f'media/contracts/Spec_{order.num_order.replace("/", "_")}.docx')
     doc.save(save_file)
+    file = open(save_file)
+    order.contract.save(save_file, File(file))
+    order.save()
     return f'Spec_{order.num_order.replace("/", "_")}.docx'
