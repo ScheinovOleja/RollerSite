@@ -1,9 +1,11 @@
+import mimetypes
 import os
 import pathlib
 from pprint import pprint
-
+import magic
 from django.core.files import File
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
+from django.utils.encoding import smart_str
 from docxtpl import DocxTemplate
 
 from RollerSiteCms.settings import MEDIA_URL
@@ -39,7 +41,6 @@ def get_context(pk):
     doc.render(context)
     save_file = os.path.abspath(f'media/contracts/Spec_{order.num_order.replace("/", "_")}.docx')
     doc.save(save_file)
-    file = open(save_file)
-    order.contract.save(save_file, File(file))
-    order.save()
-    return f'Spec_{order.num_order.replace("/", "_")}.docx'
+
+    response = FileResponse(open(save_file, "rb"))
+    return response

@@ -1,5 +1,7 @@
 import asyncio
 import json
+import os.path
+
 import redis2
 from aiogram import Bot, types
 from django.http import HttpResponse
@@ -28,7 +30,10 @@ viber = Api(bot_configuration)
 def send_register_from_site(phone, viber_id, text, file):
     message = TextMessage(text=text)
     viber.send_messages(viber_id, message)
-    message = FileMessage(media=file, file_name='Тест.docx')
+    message = FileMessage(media=f'http://185.251.88.106/media/contracts/{file.file_to_stream.name}',
+                          file_name=os.path.basename(file.file_to_stream.name),
+                          size=file.headers._store['content-length'][1],
+                          min_api_version=7)
     viber.send_messages(viber_id, message)
 
 

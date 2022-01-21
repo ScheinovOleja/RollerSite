@@ -151,11 +151,11 @@ class OrderAdmin(admin.ModelAdmin):
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
         messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
         text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
-        self.download(request, obj.id)
+        file = self.download(request, obj.id)
         try:
-            send_register_user(phone=phone, messenger_user=messenger_user, text=text, file=obj.contract)
+            send_register_user(phone=phone, messenger_user=messenger_user, text=text, file=file)
         except Exception as err:
-            pass
+            print(err)
         return super().response_post_save_add(request, obj)
 
     def response_post_save_change(self, request, obj):
@@ -212,7 +212,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     def download(self, request, pk):
         file = get_context(pk)
-        return HttpResponseRedirect(MEDIA_URL + f'contracts/{file}')
+        return file
 
     def get_user_name(self, obj):
         return f'{obj.user.first_name} {obj.user.last_name}'
