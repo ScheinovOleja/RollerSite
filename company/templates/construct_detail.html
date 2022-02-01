@@ -1,0 +1,20 @@
+{% extends 'MainPage.html' %}
+{% load static cms_tags menu_tags sekizai_tags %}
+{% block css %}
+	<link rel="stylesheet" href="{% static "css/style_construct.css" %}"/>
+{% endblock %}
+{% block content %}
+	<div class="container">
+		{{ category_detail.content|safe }}
+		<button class="btn">
+			<a href="{% page_url request.current_page %}">
+				<svg width="140px" height="40px" viewBox="0 0 140 40" class="border">
+					<polyline points="139,1 139,39 1,39 1,1 139,1" class="bg-line"></polyline>
+					<polyline points="139,1 139,39 1,39 1,1 139,1" class="hl-line"></polyline>
+				</svg>
+				<span>&larr; Назад</span>
+			</a>
+		</button>
+	</div>
+
+{% endblock %}
