@@ -3,10 +3,6 @@ from cms.models import Page, CMSPlugin
 from django.db import models
 
 
-class AboutCompany(models.Model):
-    logo = models.TextField('Аватар', max_length=99999)
-
-
 class AllConstruct(CMSPlugin):
     image_file = models.FileField(upload_to='construct_types/', null=False, blank=False,)
     image = models.CharField('Изображение на карточке', max_length=9999999, default='')

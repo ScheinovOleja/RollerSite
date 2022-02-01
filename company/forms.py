@@ -1,5 +1,4 @@
-from django.forms import ModelForm, FileField
-from django.forms.widgets import FileInput
+from django.forms import ModelForm
 
 from company.models import AllConstruct
 

@@ -3,8 +3,8 @@ import asyncio
 from aiogram import Bot, types
 from django.shortcuts import render
 
+
 # Create your views here.
-from company.models import AllConstruct
 
 
 def get_send(request):

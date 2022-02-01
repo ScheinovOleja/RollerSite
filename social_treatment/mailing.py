@@ -6,17 +6,24 @@ from django.http import HttpResponse
 from rollercms.views import send_register_from_site, viber_send_order_to_user
 
 
-def send_order(phone, password=None, messenger_user=None, text=None, file=None):
+def send_order(phone, messenger_user=None, text=None, file=None):
     if messenger_user.messenger == 0:
-        pass
-    elif messenger_user.messenger == 1:
-        viber_send_order_to_user(phone, messenger_user.id_messenger, text, file)
-    elif messenger_user.messenger == 2:
         loop = asyncio.new_event_loop()
         bot_token = '1753538352:AAGW-cAk2fAT4n5rzp5tnljZIeWa6mD9udo'
         bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
         loop.run_until_complete(bot.send_message(715845455, text))
+        if file:
+            loop.run_until_complete(bot.send_document(715845455, (file.name.split("/")[-1], file)))
         loop.close()
+    elif messenger_user.messenger == 1:
+        viber_send_order_to_user(phone, messenger_user.id_messenger, text, file)
+    elif messenger_user.messenger == 2:
+        pass
+        # loop = asyncio.new_event_loop()
+        # bot_token = '1753538352:AAGW-cAk2fAT4n5rzp5tnljZIeWa6mD9udo'
+        # bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
+        # loop.run_until_complete(bot.send_message(715845455, text))
+        # loop.close()
 
 
 def send_register_user(phone, password=None, messenger_user=None, text=None, file=None):
@@ -29,7 +36,7 @@ def send_register_user(phone, password=None, messenger_user=None, text=None, fil
     if messenger_user.messenger == 0:
         pass
     elif messenger_user.messenger == 1:
-        send_register_from_site(phone, messenger_user.id_messenger, message, file)
+        send_register_from_site(phone, messenger_user.id_messenger, message)
     elif messenger_user.messenger == 2:
         loop = asyncio.new_event_loop()
         bot_token = '1753538352:AAGW-cAk2fAT4n5rzp5tnljZIeWa6mD9udo'

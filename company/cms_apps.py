@@ -1,8 +1,5 @@
 from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
-from django.urls import re_path
-
-from company.views import ConstructDetailView, test
 
 
 @apphook_pool.register

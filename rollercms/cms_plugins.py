@@ -2,7 +2,7 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext as _
 
-from .models import Slider, Tagline, CreditAndPartnership, BackCall, MyGoogleMap, MyLetterCompany
+from .models import Slider, Tagline, CreditAndPartnership, BackCall, MyGoogleMap
 
 
 class SliderPlugin(CMSPluginBase):

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from django.contrib import admin, messages
@@ -14,7 +15,7 @@ from orders.import_to_doc import get_context
 from orders.models import Order, StateOrder, STATUSES
 from products.forms import ProductListAutocompleteForm
 from products.models import ProductList
-from social_treatment.mailing import send_register_user, send_order
+from social_treatment.mailing import send_order
 
 
 class MyOrderFormSet(BaseInlineFormSet):
@@ -154,12 +155,18 @@ class OrderAdmin(admin.ModelAdmin):
             index = 2
         else:
             index = 1
-        regex = r'^(8|7)' + '(' + phone[index:] + ')'
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
-        text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
-        file = self.download(request, obj.id)
+        regex = r'^(8|7)' + phone[index:]
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex,
+                                                                    messenger=obj.user.preferred_social_network)
+        viber_text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
+        tg_text = f'Ваш заказ под номером <code>{obj.num_order}</code> на сумму ' \
+                  f'<code>{obj.order_price} руб.</code> создан!\n\n'
+        file = open(os.path.abspath(f'media/contracts/Spec_{obj.num_order.replace("/", "_")}.docx'), 'rb')
         try:
-            send_order(phone=phone, messenger_user=messenger_user, text=text, file=file)
+            if obj.user.preferred_social_network == 0:
+                send_order(phone=phone, messenger_user=messenger_user, text=tg_text, file=file)
+            else:
+                send_order(phone=phone, messenger_user=messenger_user, text=viber_text, file=file)
         except Exception as err:
             print(err)
         return super().response_post_save_add(request, obj)
@@ -172,25 +179,39 @@ class OrderAdmin(admin.ModelAdmin):
         else:
             index = 1
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
-        text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n*{state.get_status_display()}*\n'
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex,
+                                                                    messenger=obj.user.preferred_social_network)
+        viber_text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n*{state.get_status_display()}*\n'
+        tg_text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n<code>{state.get_status_display()}</code>\n'
         if state.status == 5:
             if not obj.is_notified:
-                text = f"Ваш заказ *{obj.num_order}* установлен.\n\nПросим оставить вас отзыв следующим сообщением!\n" \
-                       f"*Чтобы оставить отзыв напишите */review* и номер заказа, после чего вводите текст отзыва.*\n\n" \
-                       f"Пример:\n\n" \
-                       f"/review АА01/01.01.21\nТекст отзыва"
+                viber_text = f"Ваш заказ *{obj.num_order}* установлен.\n\nПросим оставить вас отзыв следующим сообщением!\n" \
+                             f"*Чтобы оставить отзыв напишите */review* и номер заказа, после чего вводите текст отзыва.*\n\n" \
+                             f"Пример:\n\n" \
+                             f"/review АА01/01.01.21\nТекст отзыва"
+                tg_text = f"Ваш заказ <code>{obj.num_order}</code> установлен.\n\nПросим оставить вас отзыв следующим сообщением!\n" \
+                          f"Чтобы оставить отзыв напишите <code>/review</code> и номер заказа, после чего вводите текст отзыва.\n\n" \
+                          f"Пример:\n\n" \
+                          f"/review АА01/01.01.21\nТекст отзыва"
                 obj.is_notified = True
                 obj.save()
-                send_order(phone=phone, messenger_user=messenger_user, text=text)
+                if obj.user.preferred_social_network == 0:
+                    send_order(phone=phone, messenger_user=messenger_user, text=tg_text)
+                else:
+                    send_order(phone=phone, messenger_user=messenger_user, text=viber_text)
             return super().response_post_save_change(request, obj)
         if obj.terms_of_readiness or obj.installation_time:
             terms_of_readiness = date_by_add(obj.terms_of_readiness)
             installation_time = date_by_add(obj.installation_time)
-            text += f'\nСрок готовности до {terms_of_readiness}.\n\n' \
-                    f'Срок монтажа до {installation_time}.'
+            viber_text += f'\nСрок готовности до {terms_of_readiness}.\n\n' \
+                          f'Срок монтажа до {installation_time}.'
+            tg_text += f'\nСрок готовности до {terms_of_readiness}.\n\n' \
+                       f'Срок монтажа до {installation_time}.'
         try:
-            send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+            if obj.user.preferred_social_network == 0:
+                send_order(phone=phone, messenger_user=messenger_user, text=tg_text)
+            else:
+                send_order(phone=phone, messenger_user=messenger_user, text=viber_text)
         except Exception as err:
             pass
         return super().response_post_save_change(request, obj)

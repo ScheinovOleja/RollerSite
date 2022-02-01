@@ -1,4 +1,4 @@
-from django.urls import re_path, path
+from django.urls import path
 
 from letter.views import get_send, send_tg_mail
 

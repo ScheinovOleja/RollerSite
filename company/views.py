@@ -1,6 +1,3 @@
-import asyncio
-
-from aiogram import Bot, types
 # Create your views here.
 from django.shortcuts import render
 from django.views.generic import DetailView
