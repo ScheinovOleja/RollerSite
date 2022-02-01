@@ -1,7 +1,6 @@
 from django.db import models
 
 from RollerSiteCms import settings
-
 # Create your models here.
 from login.models import MyManager
 

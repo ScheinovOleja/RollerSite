@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os.path
 
 import redis2
 from aiogram import Bot, types
@@ -10,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
-from viberbot.api.messages import TextMessage, ContactMessage, FileMessage
+from viberbot.api.messages import TextMessage, ContactMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 
 from login.models import RegisterFromMessangers, MyUser
@@ -27,14 +26,16 @@ bot_configuration = BotConfiguration(
 viber = Api(bot_configuration)
 
 
-def send_register_from_site(phone, viber_id, text, file):
+def send_register_from_site(phone, viber_id, text):
     message = TextMessage(text=text)
     viber.send_messages(viber_id, message)
-    message = FileMessage(media=f'http://185.251.88.106/media/contracts/{file.file_to_stream.name}',
-                          file_name=os.path.basename(file.file_to_stream.name),
-                          size=file.headers._store['content-length'][1],
-                          min_api_version=7)
+
+
+def viber_send_order_to_user(phone, viber_id, text, file):
+    message = TextMessage(text=text)
     viber.send_messages(viber_id, message)
+    # if file is not None:
+    #     message
 
 
 def conversation(viber_request):

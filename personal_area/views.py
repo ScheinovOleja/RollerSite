@@ -17,7 +17,7 @@ class ChangePasswordOrEmail(View):
         data = {'messengers': []}
         for messenger in request.user.registerfrommessangers_set.all():
             data['messengers'].append(messenger.messenger)
-        return render(request, template_name='personal_area.html', context={'context': data})
+        return render(request, 'personal_area.html', context={'context': data})
 
     def post(self, request):
         email = request.POST['email']

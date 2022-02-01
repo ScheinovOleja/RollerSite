@@ -1,4 +1,5 @@
 from django.contrib.auth.backends import ModelBackend
+
 from login.models import MyUser
 
 
@@ -22,4 +23,3 @@ class MyBackend(ModelBackend):
                 return user
         except MyUser.DoesNotExist:
             pass
-

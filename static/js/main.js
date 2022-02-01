@@ -116,6 +116,50 @@ function backCallForm() {
     return false;
 }
 
+function mailSendToTg() {
+    let error = false
+    let name = $("input[name='name']").val();
+    let phone = $("input[name='tel']").val();
+    let email = $("input[name='mail']").val();
+    let text = $("textarea[name='user-message']").val()
+    if (!name) {
+        $(".error-name").show('slow');
+        error = true
+    }else if (!phone){
+        $(".error-phone").show('slow');
+        error = true
+    }else if (!email){
+        $(".error-email").show('slow');
+        error = true
+    }else if (!text){
+        $(".error-text").show('slow');
+        error = true
+    }
+    setTimeout(function () {
+        $(".submit-info").hide('slow');
+        $(".error-name").hide('slow');
+        $(".error-phone").hide('slow');
+        $(".error-email").hide('slow');
+        $(".error-text").hide('slow');
+    }, 3000);
+    if (error) {
+        return false
+    }
+    $(".submit-info").show('slow');
+    setTimeout(function () {
+        $(".submit-info").hide('slow');
+    }, 3000);
+    $.ajax({
+        type: "POST",
+        method: "POST",
+        headers: {'X-CSRFToken': csrfToken},
+        mode: 'same-origin',
+        url: "send_tg/",
+        data: {'name': name, 'phone': phone, 'email': email, 'text': text},
+    });
+    return false;
+}
+
 
 function openLoginForm(e) {
     e.preventDefault();

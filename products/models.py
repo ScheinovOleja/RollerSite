@@ -28,6 +28,8 @@ class GridPrice(models.Model):
     price = models.FloatField('Цена')
     type_construction = models.ForeignKey('TypeConstruction', on_delete=models.DO_NOTHING,
                                           verbose_name='Тип конструкции', null=False, blank=False)
+    material = models.ForeignKey('Materials', on_delete=models.DO_NOTHING, null=False, blank=False,
+                                 verbose_name='Материал')
     price_category = models.ForeignKey(PriceCategory, on_delete=models.DO_NOTHING,
                                        verbose_name='Ценовая категория', null=False, blank=False)
 
@@ -149,7 +151,11 @@ class ProductList(models.Model):
         count = self.count
         mult = self.hardware_color.multiplication
         type_construct = self.type_construction_id
-        grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
-        self.price = grid_price.price * mult * count
+        spec_type = TypeConstruction.objects.get(id=type_construct)
+        if spec_type.is_special:
+            self.price = self.price * mult * count
+        else:
+            grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
+            self.price = grid_price.price * mult * count
         super(ProductList, self).save(force_insert=False, force_update=False, using=None,
                                       update_fields=None)

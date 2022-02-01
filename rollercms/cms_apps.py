@@ -1,8 +1,5 @@
 from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
-from django.urls import path
-
-from rollercms.views import PostDetailView, blog_get
 
 
 @apphook_pool.register

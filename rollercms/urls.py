@@ -6,5 +6,5 @@ urlpatterns = [
     path('vibermsgget/', post),
     path('wamsgget/', wa_bot),
     path('', blog_get, name='all_posts'),
-    path('<int:pk>/', PostDetailView.as_view(), name='post_detail')
+    path('<int:pk>/', PostDetailView.as_view(), name='post_detail'),
 ]

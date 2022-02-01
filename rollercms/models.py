@@ -1,13 +1,10 @@
-from datetime import datetime
-
 import django
+from ckeditor_uploader.fields import RichTextUploadingField
 from cms.models import CMSPlugin, Page
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 # Create your models here.
 from django.db.models import ImageField, FileField
-from djangocms_text_ckeditor.cms_plugins import TextPlugin
-from ckeditor.fields import RichTextField
 
 
 class Gallery(models.Model):
@@ -39,6 +36,7 @@ class Photo(models.Model):
 
 class Slider(CMSPlugin):
     gallery = models.ForeignKey(Gallery, verbose_name='Слайдер', null=True, blank=True, on_delete=models.DO_NOTHING)
+    height = models.IntegerField('Высота блока', default=800)
 
     def get_title(self):
         return self.gallery.name
@@ -86,7 +84,7 @@ class MyGoogleMap(CMSPlugin):
     address = models.CharField('Адрес офиса', max_length=64, null=False, blank=False)
     phone = models.CharField('Номер телефона', max_length=64, null=False, blank=False)
     email = models.EmailField('Email', max_length=64, null=False, blank=False)
-    map_src = models.URLField('Код карты', max_length=256, null=False, blank=False)
+    map_src = models.URLField('Код карты', max_length=1024, null=False, blank=False)
 
 
 class MyLetterCompany(CMSPlugin):
@@ -98,6 +96,13 @@ class MyLetterCompany(CMSPlugin):
 class CategoriesPost(models.Model):
     category = models.CharField('Категория поста', max_length=64, null=False, blank=False)
 
+    def __str__(self):
+        return f'{self.category}'
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Все категории'
+
 
 class Post(models.Model):
     title_post = models.CharField('Заголовок поста', max_length=64, null=False, blank=False)
@@ -107,7 +112,11 @@ class Post(models.Model):
     date_create = models.DateField(auto_created=True, default=django.utils.timezone.now)
     short_description = models.CharField('Краткий текст на странице блога', max_length=128, null=False, blank=False,
                                          default='')
-    content = RichTextField(blank=True, null=True)
+    content = RichTextUploadingField(config_name='default', blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.title_post}'
 
-# class CompanyData(models.Model):
+    class Meta:
+        verbose_name = 'Пост блога'
+        verbose_name_plural = 'Все посты блога'

@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'djangocms_admin_style',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'login.apps.MyAuthConfig',
     'django.contrib.contenttypes',
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'sekizai',
     'djangocms_text_ckeditor',
     'ckeditor',
+    'ckeditor_uploader',
     'login.apps.FilerConfig',
     'easy_thumbnails',
     'mptt',
@@ -76,7 +79,9 @@ INSTALLED_APPS = [
     'personal_area',
     'reviews',
     'purchases',
-    'products'
+    'products',
+    'company',
+    'letter'
 ]
 
 AUTH_USER_MODEL = 'login.MyUser'
@@ -200,6 +205,24 @@ CACHE_MIDDLEWARE_SECONDS = '3600'
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'CMS',
+        'skin': 'moono-lisa',
+        'height': 500,
+        'width': '100%',
+        'toolbarCanCollapse': False,
+        'forcePasteAsPlainText': False,
+    },
+}
+
+CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
+CKEDITOR_RESTRICT_BY_USER = True
+CKEDITOR_BROWSE_SHOW_DIRS = True
 
 # Django-cms settings
 # ___________________________________________________________________________________________________________________

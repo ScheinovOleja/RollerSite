@@ -2,15 +2,11 @@ import asyncio
 import configparser
 import logging
 import os
-import sys
-
-import psycopg2
-from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from psycopg2.extras import NamedTupleCursor
-
 import sqlite3
+
+from aiogram import Bot, Dispatcher, types
+from aiogram.contrib.fsm_storage.redis import RedisStorage2
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 connection = sqlite3.connect('../db.sqlite3')
 

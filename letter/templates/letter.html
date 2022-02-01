@@ -1,0 +1,84 @@
+{% extends 'MainPage.html' %}
+{% load sekizai_tags thumbnail static %}
+{% block css %}
+	<link rel="stylesheet" href="{% static 'css/style_blog.css' %}"/>
+{% endblock %}
+{% block content %}
+
+	<section class="letter">
+		<div class="container">
+			<form action="" class="letter-form" method="POST" onsubmit="mailSendToTg();return false">
+				<div class="letter-header">
+					<div class="letter-left">
+						<label class="letter-l">
+							Как к вам обращаться?
+							<input
+									class="letter-input"
+									type="text"
+									name="name"
+									id="user-name"
+									placeholder="Введите ваше имя"
+							/>
+							<span class="error-name" style="color: red; display: none" id="submit-info">
+							Вы не ввели ваше имя!
+						</span>
+						</label>
+						<label class="letter-l mt30">
+							Номер телефона:
+							<input
+									class="letter-input"
+									type="tel"
+									name="tel"
+									id="user-tel"
+									pattern="^((8|\+7)[\-]?)?(\(?\d{3}\)?[\-]?)?[\d\-]{7,10}$"
+									placeholder="Введите ваш номер телефона"
+							/>
+							<span class="error-phone" style="color: red; display: none" id="submit-info">
+							Вы не ввели ваш номер телефона!
+						</span>
+						</label>
+						<label class="letter-l mt30">
+							Email:
+							<input
+									class="letter-input"
+									type="email"
+									name="mail"
+									id="user-email"
+									placeholder="Введите ваш email"
+							/>
+							<span class="error-email" style="color: red; display: none" id="submit-info">
+							Вы не ввели ваш email!
+						</span>
+						</label>
+					</div>
+					<div class="letter-right">
+						<div class="letter-note">
+							<h4 class="note-title">Обратите внимание!</h4>
+							<p class="note-info">
+								Мы ответим на ваше письмо в течении ближайшей недели. Ответ
+								придет вам на почту, которую вы указали при обращении
+							</p>
+						</div>
+					</div>
+				</div>
+				<label for="letter-textarea" class="letter-l mt30">
+					Текст обращения:
+					<textarea
+							placeholder="Введите текст письма"
+							name="user-message"
+							id="user-message"
+							style="resize: none"
+					></textarea>
+					<span class="error-text" style="color: red; display: none" id="submit-info">
+					Вы не ввели текст обращения!
+				</span>
+				</label>
+				<span class="submit-info" style="display: none; text-align: center" id="submit-info"
+				>Спасибо. Ваше письмо получено. Ожидайте ответ в течение недели на
+            указанный email</span
+				>
+				<button class="letter-submit">Отправить</button>
+			</form>
+		</div>
+	</section>
+{% endblock %}

@@ -1,19 +1,20 @@
 from datetime import datetime
 
-from django.contrib import admin
+from django.contrib import admin, messages
 # Register your models here.
 from django.forms import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from RollerSiteCms.settings import MEDIA_URL
-from login.models import MyUser, RegisterFromMessangers
+from login.models import RegisterFromMessangers
+from orders.forms import UserAutocompleteForm
 from orders.general_func import date_by_add
 from orders.import_to_doc import get_context
 from orders.models import Order, StateOrder, STATUSES
+from products.forms import ProductListAutocompleteForm
 from products.models import ProductList
-from social_treatment.mailing import send_register_user
+from social_treatment.mailing import send_register_user, send_order
 
 
 class MyOrderFormSet(BaseInlineFormSet):
@@ -67,8 +68,8 @@ class ProductInline(admin.StackedInline):
     formset = MyProductFormSet
     model = ProductList
     extra = 0
-    readonly_fields = ['price']
     template = 'admin/orders/stacked.html'
+    form = ProductListAutocompleteForm
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -81,6 +82,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ['num_order']
     inlines = [ProductInline, OrderStateInline]
     change_form_template = 'admin/orders/change_form.html'
+    form = UserAutocompleteForm
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         order = Order.objects.get(id=object_id)
@@ -120,7 +122,11 @@ class OrderAdmin(admin.ModelAdmin):
                 new_number = initials + ''.join(word for word in new_number)
                 obj.num_order = f'{new_number}/{date}'
             obj.manager = request.user
-            obj.save()
+            try:
+                obj.save()
+            except Exception as err:
+                messages.error(request, 'Error message')
+                return
             StateOrder.objects.create(
                 status=STATUSES[0][0],
                 order=obj
@@ -153,7 +159,7 @@ class OrderAdmin(admin.ModelAdmin):
         text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
         file = self.download(request, obj.id)
         try:
-            send_register_user(phone=phone, messenger_user=messenger_user, text=text, file=file)
+            send_order(phone=phone, messenger_user=messenger_user, text=text, file=file)
         except Exception as err:
             print(err)
         return super().response_post_save_add(request, obj)
@@ -176,14 +182,17 @@ class OrderAdmin(admin.ModelAdmin):
                        f"/review АА01/01.01.21\nТекст отзыва"
                 obj.is_notified = True
                 obj.save()
-                send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+                send_order(phone=phone, messenger_user=messenger_user, text=text)
             return super().response_post_save_change(request, obj)
         if obj.terms_of_readiness or obj.installation_time:
             terms_of_readiness = date_by_add(obj.terms_of_readiness)
             installation_time = date_by_add(obj.installation_time)
             text += f'\nСрок готовности до {terms_of_readiness}.\n\n' \
                     f'Срок монтажа до {installation_time}.'
-        send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        try:
+            send_register_user(phone=phone, messenger_user=messenger_user, text=text)
+        except Exception as err:
+            pass
         return super().response_post_save_change(request, obj)
 
     def cancel_order(self, obj):

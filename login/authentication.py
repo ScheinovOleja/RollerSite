@@ -18,5 +18,4 @@ def authentication(request):
         else:
             status = '2'
         some_data_to_dump = {'status': status}
-        answer = json.dumps(some_data_to_dump)
         return redirect('/blog')

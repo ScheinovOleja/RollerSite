@@ -1,8 +1,8 @@
 import os
 from asyncio.log import logger
+
 from aiogram import Dispatcher
 from aiogram.utils import executor
-from django.conf import settings
 
 from tg_bot import dp, loop
 from tg_bot.handlers import register_chat_viber, register_back_call, register_registration, register_all_message

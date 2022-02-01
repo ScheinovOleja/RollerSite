@@ -1,10 +1,13 @@
 # Create your views here.
 import json
 
+from dal import autocomplete
+from django.db.models import Q
 from django.http import HttpResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
+from login.models import MyUser
 from products.models import GridPrice, HardwareColor, Materials, TypeConstruction
 
 
@@ -20,14 +23,15 @@ class ChangePrice(View):
                 multiply_value = float(request.POST['multiply'])
                 type_construct = request.POST['construct']
                 mult = HardwareColor.objects.get_or_none(id=multiply_value)
-                if request.POST['price']:
+                spec_type = TypeConstruction.objects.get(id=type_construct)
+                if spec_type.is_special:
                     form_price = float(request.POST['price'])
                     price = form_price * mult.multiplication * count * width * height
                 else:
                     grid_price = GridPrice.objects.get_or_none(width=width, height=height,
                                                                type_construction=type_construct)
                     price = grid_price.price * mult.multiplication * count
-            except ValueError:
+            except ValueError as err:
                 return HttpResponse(0, status=200)
             return HttpResponse(price, status=200)
 
@@ -55,18 +59,13 @@ def get_special_construction(request):
     else:
         return HttpResponse(False, status=200)
 
-# def ajax_department_projects(request):
-#     department_id = request.GET.get('department_id')
-#     if department_id is None:
-#         return HttpResponseBadRequest()
-#
-#     project_qs = Project.objects.select_related('department', 'project_type')
-#     projects = get_list_or_404(project_qs, department__id=department_id)
-#     data = []
-#     for p in projects:
-#         data.append({
-#             'id': p.id,
-#             'name': unicode(p),
-#         })
-#
-#     return HttpResponse(simplejson.dumps(data), mimetype='application/json')
+
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = MyUser.objects.all().filter(is_staff=False)
+
+        if self.q:
+            qs = qs.filter(Q(first_name__istartswith=self.q) | Q(last_name__istartswith=self.q) |
+                           Q(patronymic__istartswith=self.q))
+
+        return qs
