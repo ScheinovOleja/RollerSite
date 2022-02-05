@@ -58,13 +58,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def save(self, *args, **kwargs):
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=self.phone)
-        if messenger_user.messenger == 0:
-            self.preferred_social_network = 0
-        elif messenger_user.messenger == 1:
-            self.preferred_social_network = 1
-        elif messenger_user.messenger == 2:
-            self.preferred_social_network = 2
+        try:
+            messenger_user = RegisterFromMessangers.objects.get_or_none(phone=self.phone)
+            if messenger_user.messenger == 0:
+                self.preferred_social_network = 0
+            elif messenger_user.messenger == 1:
+                self.preferred_social_network = 1
+            elif messenger_user.messenger == 2:
+                self.preferred_social_network = 2
+        except Exception as err:
+            pass
         super(MyUser, self).save(*args, **kwargs)
 
 
