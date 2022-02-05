@@ -37,15 +37,16 @@ class CustomUserCreationForm(forms.ModelForm):
             url=f'https://avatars.dicebear.com/api/initials/{user.first_name}_{user.last_name}.svg?size=32')
         user.avatar = avatar.content.decode(encoding='utf-8').replace('\'', '')
         user.save()
-        text = f"Доброго времени суток!\n\n" \
-               f"Вы зарегистрированы на сайте example.com!\n" \
-               f"Ваши данные для входа на сайт:\n" \
-               f"Логин - *{phone}*,\n" \
-               f"Пароль - *{self.password}*.\n\n" \
-               f"Обязательно смените пароль!!"
-        send_register_user(phone, self.password, messenger_user, text)
-        messenger_user.user = user
-        messenger_user.save()
+        if messenger_user:
+            text = f"Доброго времени суток!\n\n" \
+                   f"Вы зарегистрированы на сайте example.com!\n" \
+                   f"Ваши данные для входа на сайт:\n" \
+                   f"Логин - *{phone}*,\n" \
+                   f"Пароль - *{self.password}*.\n\n" \
+                   f"Обязательно смените пароль!!"
+            send_register_user(phone, self.password, messenger_user, text)
+            messenger_user.user = user
+            messenger_user.save()
         return user
 
 
