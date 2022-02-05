@@ -102,7 +102,7 @@
 						</svg>
 					</a>
 					{% static_placeholder "phone_number" %}
-					{% if user.is_superuser %}
+					{% if user.is_staff %}
 						<a href="{% url 'admin:index' %}">Перейти в админку</a>
 					{% endif %}
 					<a href="#" class="user-logo">
