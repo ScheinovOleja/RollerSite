@@ -17,4 +17,4 @@ async def get_message(message: types.Message, state: FSMContext):
     text = f"Сообщение из Telegram от пользователя <a href=\"{message.from_user.url}\">" \
            f"{message.from_user.full_name}</a>:\n\n" \
            f"{message.text}"
-    await bot.send_message(715845455, text, reply_markup=markup, parse_mode='HTML')
+    await bot.send_message(1907721147, text, reply_markup=markup, parse_mode='HTML')

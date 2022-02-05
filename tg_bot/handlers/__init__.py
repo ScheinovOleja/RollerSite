@@ -3,16 +3,11 @@ from aiogram import Dispatcher
 from tg_bot.handlers.chat_handler import get_message
 from tg_bot.handlers.handler_register import register, get_number
 from tg_bot.handlers.review_handler import reviews_reg
-from tg_bot.handlers.treatment_back_call import back_call
 from tg_bot.states.state import Registration
 
 
 def register_reviews(dp: Dispatcher):
     dp.register_message_handler(reviews_reg, commands=['review'], state='*')
-
-
-def register_back_call(dp: Dispatcher):
-    dp.register_callback_query_handler(back_call, lambda query: "back_call" in query.data)
 
 
 def register_registration(dp: Dispatcher):

@@ -23,5 +23,5 @@ def send_tg_mail(request):
               f"Email - <code>{request.POST['email']}</code>\n\n" \
               f"Текст обращения:\n" \
               f"{request.POST['text']}"
-    loop.run_until_complete(bot.send_message(715845455, message, reply_markup=markup))
+    loop.run_until_complete(bot.send_message(1907721147, message, reply_markup=markup))
     loop.close()
