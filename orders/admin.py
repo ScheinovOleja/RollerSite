@@ -156,12 +156,11 @@ class OrderAdmin(admin.ModelAdmin):
             index = 2
         else:
             index = 1
-        regex = r'^(8|7)' + phone[index:]
         messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
         viber_text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
         tg_text = f'Ваш заказ под номером <code>{obj.num_order}</code> на сумму ' \
                   f'<code>{obj.order_price} руб.</code> создан!\n\n'
-        file = self.download(request, obj.pk)
+        self.download(request, obj.pk)
         file = open(os.path.abspath(f'media/contracts/Spec_{obj.num_order.replace("/", "_")}.docx'), 'rb')
         try:
             if obj.user.preferred_social_network == 0:

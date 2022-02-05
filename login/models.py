@@ -34,7 +34,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     preferred_social_network = models.IntegerField(choices=MESSENGERS, default=None, null=True,
-                                                   verbose_name='Мессенджер')
+                                                   verbose_name='Предпочитаемый мессенджер')
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -56,6 +56,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name
+
+    def save(self, *args, **kwargs):
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=self.phone)
+        if messenger_user.messenger == 0:
+            self.preferred_social_network = 0
+        elif messenger_user.messenger == 1:
+            self.preferred_social_network = 1
+        elif messenger_user.messenger == 2:
+            self.preferred_social_network = 2
+        super(MyUser, self).save(*args, **kwargs)
 
 
 class MyManager(Manager):

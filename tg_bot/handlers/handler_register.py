@@ -29,7 +29,7 @@ async def get_number(message: types.Message, state: FSMContext):
     with db_session:
         user_phone = message.contact.phone_number[2:]
         user = LoginMyuser.get(lambda u: user_phone in u.phone)
-        user_messanger = LoginRegisterfrommessangers.get(lambda u: u.user == user)
+        user_messanger = LoginRegisterfrommessangers.get(lambda u: user_phone in u.phone)
         if user_messanger:
             text = 'Спасибо за вашу тягу, но вы уже зарегистрированы!)'
             await message.answer(text, reply_markup=types.ReplyKeyboardRemove())
