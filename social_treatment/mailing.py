@@ -11,9 +11,9 @@ def send_order(phone, messenger_user=None, text=None, file=None):
         loop = asyncio.new_event_loop()
         bot_token = '5125599420:AAFvc7hcTAR-nOT26w1zq2-SEPO-M9PCtMY'
         bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
-        loop.run_until_complete(bot.send_message(715845455, text))
+        loop.run_until_complete(bot.send_message(messenger_user.id_messenger, text))
         if file:
-            loop.run_until_complete(bot.send_document(715845455, (file.name.split("/")[-1], file)))
+            loop.run_until_complete(bot.send_document(messenger_user.id_messenger, (file.name.split("/")[-1], file)))
         loop.close()
     elif messenger_user.messenger == 1:
         viber_send_order_to_user(phone, messenger_user.id_messenger, text, file)
@@ -21,7 +21,7 @@ def send_order(phone, messenger_user=None, text=None, file=None):
         pass
 
 
-def send_register_user(phone, password=None, messenger_user=None, text=None, file=None):
+def send_register_user(phone, password=None, messenger_user=None, text=None):
     if messenger_user.messenger == 0:
         message = f"Доброго времени суток!\n\n" \
                   f"Вы зарегистрированы на сайте example.com!\n" \
@@ -32,7 +32,7 @@ def send_register_user(phone, password=None, messenger_user=None, text=None, fil
         loop = asyncio.new_event_loop()
         bot_token = '5125599420:AAFvc7hcTAR-nOT26w1zq2-SEPO-M9PCtMY'
         bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
-        loop.run_until_complete(bot.send_message(715845455, message))
+        loop.run_until_complete(bot.send_message(messenger_user.id_messenger, message))
         loop.close()
     elif messenger_user.messenger == 1:
         send_register_from_site(phone, messenger_user.id_messenger, text)
