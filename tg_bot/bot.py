@@ -1,4 +1,5 @@
 import os
+import sys
 from asyncio.log import logger
 
 from aiogram import Dispatcher
@@ -8,6 +9,7 @@ from tg_bot import dp, loop
 from tg_bot.handlers import register_back_call, register_registration, register_all_message, \
     register_reviews
 
+sys.path.append('/root/RollerSite/')
 
 async def register_handler_back_call(dispatcher: Dispatcher):
     register_back_call(dispatcher)

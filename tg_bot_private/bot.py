@@ -1,4 +1,5 @@
 import os
+import sys
 from asyncio.log import logger
 
 from aiogram import Dispatcher
@@ -7,6 +8,7 @@ from aiogram.utils import executor
 from tg_bot_private import dp, loop
 from tg_bot_private.handlers import register_chat_viber
 
+sys.path.append('/root/RollerSite/')
 
 async def register_handler_chat(dispatcher: Dispatcher):
     register_chat_viber(dispatcher)
