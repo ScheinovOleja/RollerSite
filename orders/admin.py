@@ -111,7 +111,7 @@ class OrderAdmin(admin.ModelAdmin):
                                                                   stateorder__date_time__year=datetime.now().date().year
                                                                   ).last()
             if last_order_for_current_manager is None:
-                initials_manager = "".join(word[0].upper() for word in request.user.get_full_name().split())
+                initials_manager = "".join(word[0].upper() for word in obj.user.get_full_name().split())
                 obj.num_order = f'{initials_manager}01/{datetime.now().date().strftime("%d.%m.%y")}'
             else:
                 date = last_order_for_current_manager.num_order.split('/')[1]
@@ -238,6 +238,16 @@ class OrderAdmin(admin.ModelAdmin):
         order = Order.objects.get(id=pk)
         order.is_cancel = True
         order.save()
+        phone = order.user.phone
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
+        viber_text = f'Ваш заказ *{order.num_order}* отменен! Если вы не отменяли заказ, просим обратиться к ' \
+                     f'администрации!'
+        tg_text = f'Ваш заказ <code>{order.num_order}</code> отменен! Если вы не отменяли заказ, просим обратиться к ' \
+                  f'администрации!'
+        if order.user.preferred_social_network == 0:
+            send_order(phone=phone, messenger_user=messenger_user, text=tg_text)
+        else:
+            send_order(phone=phone, messenger_user=messenger_user, text=viber_text)
         return HttpResponseRedirect(reverse(f'admin:orders_order_changelist'))
 
     def download(self, request, pk):
