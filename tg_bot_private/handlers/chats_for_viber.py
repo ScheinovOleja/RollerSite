@@ -1,4 +1,3 @@
-from aiogram import Bot, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 from viberbot import BotConfiguration, Api
@@ -55,3 +54,9 @@ async def stop_chat(query: CallbackQuery, state: FSMContext):
     text = f'Закончен чат с пользователем <code>{query.message.md_text.split("`", 1)[1].split("`")[0]}</code>.'
     await Chat.non_chat.set()
     await query.message.answer(text)
+
+
+async def register(message: Message, state: FSMContext):
+    if message.from_user.id == 1907721147 or message.from_user.id == 715845455:
+        await Chat.non_chat.set()
+        await message.answer('Поздравляю, теперь ты могёшь общаться со своими покупателями!)')
