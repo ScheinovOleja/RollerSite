@@ -15,7 +15,7 @@ async def start_chat(query: CallbackQuery, state: FSMContext):
     else:
         await state.update_data({'chat': 'whatsapp'})
     await state.update_data({'id': query.data.split('_')[2]})
-    text = f'Начат чат с пользователем <code>{query.message.md_text.split("`", 1)[1].split("`")[0]}</code>.'
+    text = f'Начат чат с пользователем <code>{query.message.md_text.split("[", 1)[1].split("]")[0]}</code>.'
     await query.message.answer(text)
     await Chat.in_chat.set()
 
@@ -51,7 +51,7 @@ async def chat_viber(message: Message, state: FSMContext):
 
 
 async def stop_chat(query: CallbackQuery, state: FSMContext):
-    text = f'Закончен чат с пользователем <code>{query.message.md_text.split("`", 1)[1].split("`")[0]}</code>.'
+    text = f'Закончен чат с пользователем <code>{query.message.md_text.split("[", 1)[1].split("]")[0]}</code>.'
     await Chat.non_chat.set()
     await query.message.answer(text)
 
