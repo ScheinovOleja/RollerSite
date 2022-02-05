@@ -55,7 +55,7 @@ def chat_viber_tg(viber):
     for key in r.scan_iter("fsm:*:*:data"):
         is_chat = json.loads(r.get(key))
     loop = asyncio.new_event_loop()
-    bot_token = '1753538352:AAGW-cAk2fAT4n5rzp5tnljZIeWa6mD9udo'
+    bot_token = '5274582756:AAG6bi8rD4i1cT6XXRVgDZysccacbw4Gx44'
     bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
     markup = types.InlineKeyboardMarkup()
     if is_chat:

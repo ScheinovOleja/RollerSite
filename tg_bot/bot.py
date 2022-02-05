@@ -5,11 +5,8 @@ from aiogram import Dispatcher
 from aiogram.utils import executor
 
 from tg_bot import dp, loop
-from tg_bot.handlers import register_chat_viber, register_back_call, register_registration, register_all_message
-
-
-async def register_handler_chat(dispatcher: Dispatcher):
-    register_chat_viber(dispatcher)
+from tg_bot.handlers import register_back_call, register_registration, register_all_message, \
+    register_reviews
 
 
 async def register_handler_back_call(dispatcher: Dispatcher):
@@ -24,8 +21,12 @@ async def register_message_handler(dispatcher: Dispatcher):
     register_all_message(dispatcher)
 
 
+async def register_reviews_handler(dispatcher: Dispatcher):
+    register_reviews(dispatcher)
+
+
 async def main(dispatcher: Dispatcher):
-    await register_handler_chat(dispatcher)
+    await register_reviews_handler(dispatcher)
     await register_handler_back_call(dispatcher)
     await register_handler_registration(dispatcher)
     await register_message_handler(dispatcher)

@@ -57,10 +57,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
 
-    def save(self, *args, **kwargs):
-        super(MyUser, self).save(*args, **kwargs)
-        return self
-
 
 class MyManager(Manager):
 

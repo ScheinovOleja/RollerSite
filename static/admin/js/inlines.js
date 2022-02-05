@@ -65,7 +65,7 @@
                 .addClass(options.formCssClass)
                 .attr("id", options.prefix + "-" + nextIndex);
             addInlineDeleteButton(row);
-            addInlineCopyButton(row);
+            // addInlineCopyButton(row);
             row.find("*").each(function () {
                 updateElementIndex(this, options.prefix, totalForms.val());
             });
@@ -88,60 +88,60 @@
             $(document).trigger('formset:added', [row, options.prefix]);
         };
 
-        const addInlineCopyButton = function (row) {
-            if (row.is("tr")) {
-                // If the forms are laid out in table rows, insert
-                // the remove button into the last table cell:
-                row.children(":last").append('<div><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></div>");
-            } else if (row.is("ul") || row.is("ol")) {
-                // If they're laid out as an ordered/unordered list,
-                // insert an <li> after the last list item:
-                row.append('<li><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></li>");
-            } else {
-                // Otherwise, just insert the remove button as the
-                // last child element of the form's container:
-                row.children(":first").append('<span><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></span>");
-            }
-            // Add copy handler for each row.
-            row.find("a." + options.copyCssClass).on('click', inlineCopyHandler.bind(this));
-        };
-
-        const inlineCopyHandler = function (e) {
-            e.preventDefault();
-            const copyButton = $(e.target);
-            const template = $("#" + options.prefix + "-empty");
-            const row = copyButton.closest('.' + options.formCssClass);
-            const copyRow = row.clone(true, true)
-            copyRow.removeClass(options.emptyCssClass)
-                .addClass(options.formCssClass)
-                .attr("id", options.prefix + "-" + nextIndex);
-            copyRow.find("*").each(function () {
-                updateElementIndex(this, options.prefix, totalForms.val());
-            });
-            let all_old_select = row.find('select')
-            let all_new_select = copyRow.find('select')
-            for (let i = 0; i < all_old_select.length; i++) {
-                all_new_select[i].value = all_old_select[i].value
-                all_new_select[i].selectedIndex = all_old_select[i].selectedIndex
-            }
-            // Insert the new form when it has been fully edited.
-            copyRow.insertBefore($(template));
-            // Update number of total forms.
-            $(totalForms).val(parseInt(totalForms.val(), 10) + 1);
-            nextIndex += 1;
-            // Hide the add button if there's a limit and it's been reached.
-            if ((maxForms.val() !== '') && (maxForms.val() - totalForms.val()) <= 0) {
-                copyButton.parent().hide();
-            }
-            // Show the remove buttons if there are more than min_num.
-            toggleDeleteButtonVisibility(copyRow.closest('.inline-group'));
-
-            // Pass the new form to the post-copy callback, if provided.
-            if (options.copied) {
-                options.copied(copyRow);
-            }
-            $(document).trigger('formset:copied', [copyRow, options.prefix]);
-        }
+        // const addInlineCopyButton = function (row) {
+        //     if (row.is("tr")) {
+        //         // If the forms are laid out in table rows, insert
+        //         // the remove button into the last table cell:
+        //         row.children(":last").append('<div><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></div>");
+        //     } else if (row.is("ul") || row.is("ol")) {
+        //         // If they're laid out as an ordered/unordered list,
+        //         // insert an <li> after the last list item:
+        //         row.append('<li><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></li>");
+        //     } else {
+        //         // Otherwise, just insert the remove button as the
+        //         // last child element of the form's container:
+        //         row.children(":first").append('<span><a class="' + options.copyCssClass + '" href="#">' + options.copyText + "</a></span>");
+        //     }
+        //     // Add copy handler for each row.
+        //     row.find("a." + options.copyCssClass).on('click', inlineCopyHandler.bind(this));
+        // };
+        //
+        // const inlineCopyHandler = function (e) {
+        //     e.preventDefault();
+        //     const copyButton = $(e.target);
+        //     const template = $("#" + options.prefix + "-empty");
+        //     const row = copyButton.closest('.' + options.formCssClass);
+        //     const copyRow = row.clone(true, true)
+        //     copyRow.removeClass(options.emptyCssClass)
+        //         .addClass(options.formCssClass)
+        //         .attr("id", options.prefix + "-" + nextIndex);
+        //     copyRow.find("*").each(function () {
+        //         updateElementIndex(this, options.prefix, totalForms.val());
+        //     });
+        //     let all_old_select = row.find('div.form-row')
+        //     let all_new_select = copyRow.find('div.form-row')
+        //     for (let i = 0; i < all_old_select.length; i++) {
+        //         all_new_select[i] = all_old_select[i]
+        //         all_new_select[i] = all_old_select[i]
+        //     }
+        //     // Insert the new form when it has been fully edited.
+        //     copyRow.insertBefore($(template));
+        //     // Update number of total forms.
+        //     $(totalForms).val(parseInt(totalForms.val(), 10) + 1);
+        //     nextIndex += 1;
+        //     // Hide the add button if there's a limit and it's been reached.
+        //     if ((maxForms.val() !== '') && (maxForms.val() - totalForms.val()) <= 0) {
+        //         copyButton.parent().hide();
+        //     }
+        //     // Show the remove buttons if there are more than min_num.
+        //     toggleDeleteButtonVisibility(copyRow.closest('.inline-group'));
+        //
+        //     // Pass the new form to the post-copy callback, if provided.
+        //     if (options.copied) {
+        //         options.copied(copyRow);
+        //     }
+        //     $(document).trigger('formset:copied', [copyRow, options.prefix]);
+        // }
 
         /**
          * The "X" button that is part of every unsaved inline.
@@ -244,8 +244,8 @@
         addText: "add another", // Text for the add link
         deleteText: "remove", // Text for the delete link
         addCssClass: "add-row", // CSS class applied to the add link
-        copyCssClass: "inline-copylink",
-        copyText: "Copy",
+        // copyCssClass: "inline-copylink",
+        // copyText: "Copy",
         deleteCssClass: "delete-row", // CSS class applied to the delete link
         emptyCssClass: "empty-row", // CSS class applied to the empty row
         formCssClass: "dynamic-form", // CSS class applied to each form in a formset
@@ -380,12 +380,12 @@
                 updateSelectFilter();
                 updateInlineLabel(row);
             },
-            copied: function (row) {
-                initPrepopulatedFields(row);
-                reinitDateTimeShortCuts();
-                updateInlineLabel(row);
-                countSum();
-            },
+            // copied: function (row) {
+            //     initPrepopulatedFields(row);
+            //     reinitDateTimeShortCuts();
+            //     updateInlineLabel(row);
+            //     countSum();
+            // },
             addButton: options.addButton
         });
 

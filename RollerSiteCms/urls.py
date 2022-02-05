@@ -24,7 +24,7 @@ from django.urls import include, path, re_path
 from login.authentication import authentication
 from orders.views import UserAutocomplete
 from products.views import MaterialAutocomplete, ControlTypeAutocomplete, TypeConstructAutocomplete, \
-    HardwareColorAutocomplete, MountTypeAutocomplete, TypeFabricMeasurementAutocomplete
+    HardwareColorAutocomplete, MountTypeAutocomplete, ColorMaterialAutocomplete, PriceCategoryAutocomplete
 from social_treatment.mailing import mailing
 
 admin.autodiscover()
@@ -40,8 +40,8 @@ urlpatterns += i18n_patterns(
     re_path('^control_type-autocomplete/', ControlTypeAutocomplete.as_view(), name='control_type-autocomplete'),
     re_path('^hardware_color-autocomplete/', HardwareColorAutocomplete.as_view(), name='hardware_color-autocomplete'),
     re_path('^mount_type-autocomplete/', MountTypeAutocomplete.as_view(), name='mount_type-autocomplete'),
-    re_path('^type_fabric-autocomplete/', TypeFabricMeasurementAutocomplete.as_view(),
-            name='type_fabric-autocomplete'),
+    re_path('^color_material-autocomplete/', ColorMaterialAutocomplete.as_view(), name='color_material-autocomplete'),
+    re_path('^price_category-autocomplete/', PriceCategoryAutocomplete.as_view(), name='price_category-autocomplete'),
     re_path('^user-autocomplete/', UserAutocomplete.as_view(), name='user-autocomplete'),
     re_path('mailing/', mailing),
     re_path('login_user/', authentication),

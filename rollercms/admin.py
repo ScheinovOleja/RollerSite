@@ -2,7 +2,7 @@
 from django.contrib import admin
 from sorl.thumbnail.admin import AdminInlineImageMixin
 
-from rollercms.models import Photo, Gallery, Post, CategoriesPost
+from rollercms.models import Photo
 
 
 class PhotoInline(AdminInlineImageMixin, admin.TabularInline):
@@ -16,8 +16,3 @@ class GalleryAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     fields = ['title_post', 'category', 'image', 'short_description', 'content']
-
-
-admin.site.register(Gallery, GalleryAdmin)
-admin.site.register(Post, PostAdmin)
-admin.site.register(CategoriesPost)

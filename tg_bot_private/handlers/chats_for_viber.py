@@ -1,10 +1,11 @@
+from aiogram import Bot, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 from viberbot import BotConfiguration, Api
 from viberbot.api.messages import TextMessage
 
 from tg_bot import bot
-from tg_bot.states.state import Chat, Registration
+from tg_bot_private.states.state import Chat
 
 
 async def start_chat(query: CallbackQuery, state: FSMContext):
@@ -51,6 +52,6 @@ async def chat_viber(message: Message, state: FSMContext):
 
 
 async def stop_chat(query: CallbackQuery, state: FSMContext):
-    await Registration.in_registered.set()
     text = f'Закончен чат с пользователем <code>{query.message.md_text.split("`", 1)[1].split("`")[0]}</code>.'
+    await Chat.non_chat.set()
     await query.message.answer(text)

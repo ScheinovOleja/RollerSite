@@ -32,7 +32,7 @@ class CustomUserCreationForm(forms.ModelForm):
         else:
             index = 1
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
         avatar = requests.get(
             url=f'https://avatars.dicebear.com/api/initials/{user.first_name}_{user.last_name}.svg?size=32')
         user.avatar = avatar.content.decode(encoding='utf-8').replace('\'', '')
@@ -44,6 +44,8 @@ class CustomUserCreationForm(forms.ModelForm):
                f"Пароль - *{self.password}*.\n\n" \
                f"Обязательно смените пароль!!"
         send_register_user(phone, self.password, messenger_user, text)
+        messenger_user.user = user
+        messenger_user.save()
         return user
 
 

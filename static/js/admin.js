@@ -13,6 +13,12 @@ $(document).on('click', 'div.add-row > a', function (e) {
             $(element).on('DOMSubtreeModified', changeProduct)
         }
     }
+    let price_category = document.querySelectorAll('div.field-price_category > div > div > span > span > span > span[role="textbox"]')
+    for (let element of price_category) {
+        if (element.id !== 'id_productlist_set-__prefix__-price_category') {
+            $(element).on('DOMSubtreeModified', changeProduct)
+        }
+    }
 })
 
 {
@@ -58,7 +64,7 @@ function changeForm(e) {
 
 function changeProduct(e) {
     e.preventDefault();
-    if (e.type === 'DOMSubtreeModified'){
+    if (e.type === 'DOMSubtreeModified') {
         e.currentTarget = e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     }
     let width = e.currentTarget.parentElement.querySelector('fieldset.module > .field-width > div > input');
@@ -69,6 +75,7 @@ function changeProduct(e) {
     let multiply_value = multiply_field.options[multiply_field.selectedIndex].value;
     let price = e.currentTarget.parentElement.querySelector('fieldset.module > .field-price > div > input');
     let prod_sum = e.currentTarget.parentElement.querySelector('fieldset.module > .field-price > div.child_sum > div.readonly')
+    let price_category = e.currentTarget.parentElement.querySelector('fieldset.module > .field-price_category > div > div > select')
     let price_value = price.value
     let request = $.ajax({
         type: "POST", method: "POST", headers: {'X-CSRFToken': csrfToken}, mode: 'same-origin', data: {
@@ -77,7 +84,8 @@ function changeProduct(e) {
             'count': count.value,
             'multiply': multiply_value,
             'construct': type_construct.value,
-            'price': price_value
+            'price': price_value,
+            'price_category': price_category.value
         }, url: "/ru/ajax_calc/counting_price/",
     });
     request.done(function (price_field) {

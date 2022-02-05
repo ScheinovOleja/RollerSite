@@ -3,17 +3,15 @@
 from dal import autocomplete
 from django.db.models import Q
 
-from .models import Materials, TypeConstruction, ControlType, HardwareColor, MountType, TypeFabricMeasurement
+from .models import Materials, TypeConstruction, ControlType, HardwareColor, MountType, ColorMaterial, PriceCategory
 
 
 class MaterialAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        type_construct = self.forwarded['type_construction']
-        qs = Materials.objects.all().filter(type_construction=int(type_construct))
+        qs = Materials.objects.all()
 
         if self.q:
-            qs = qs.filter(Q(name__istartswith=self.q) | Q(color__istartswith=self.q) | Q(
-                type_construction__name__istartswith=self.q))
+            qs = qs.filter(Q(name__istartswith=self.q))
 
         return qs
 
@@ -58,9 +56,20 @@ class MountTypeAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-class TypeFabricMeasurementAutocomplete(autocomplete.Select2QuerySetView):
+class ColorMaterialAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = TypeFabricMeasurement.objects.all()
+        qs = ColorMaterial.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs
+
+
+class PriceCategoryAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        type_construct = self.forwarded['type_construction']
+        qs = PriceCategory.objects.all().filter(gridprice__type_construction=type_construct)
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)

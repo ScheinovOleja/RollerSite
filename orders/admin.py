@@ -142,11 +142,12 @@ class OrderAdmin(admin.ModelAdmin):
         try:
             if any([state.cleaned_data['status'] == 2 and not state.cleaned_data['DELETE'] for state in formset]):
                 form.instance.payment_state = True
+                form.instance.save()
             else:
                 form.instance.payment_state = False
+                form.instance.save()
         except Exception as err:
             pass
-        form.instance.save()
         super().save_formset(request, form, formset, change)
 
     def response_post_save_add(self, request, obj):
@@ -156,11 +157,11 @@ class OrderAdmin(admin.ModelAdmin):
         else:
             index = 1
         regex = r'^(8|7)' + phone[index:]
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex,
-                                                                    messenger=obj.user.preferred_social_network)
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
         viber_text = f'Ваш заказ под номером *{obj.num_order}* на сумму *{obj.order_price} руб.* создан!\n\n'
         tg_text = f'Ваш заказ под номером <code>{obj.num_order}</code> на сумму ' \
                   f'<code>{obj.order_price} руб.</code> создан!\n\n'
+        file = self.download(request, obj.pk)
         file = open(os.path.abspath(f'media/contracts/Spec_{obj.num_order.replace("/", "_")}.docx'), 'rb')
         try:
             if obj.user.preferred_social_network == 0:
@@ -179,8 +180,7 @@ class OrderAdmin(admin.ModelAdmin):
         else:
             index = 1
         regex = r'^(8|7)' + '(' + phone[index:] + ')'
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex,
-                                                                    messenger=obj.user.preferred_social_network)
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
         viber_text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n*{state.get_status_display()}*\n'
         tg_text = f'Статус вашего заказа _{obj.num_order}_ обновился!\n\n<code>{state.get_status_display()}</code>\n'
         if state.status == 5:
@@ -253,6 +253,3 @@ class OrderAdmin(admin.ModelAdmin):
     get_user_name.short_description = 'Заказчик'
     get_manager_name.short_description = 'Менеджер'
     cancel_order.short_description = 'Отмена заказа'
-
-
-admin.site.register(Order, OrderAdmin)

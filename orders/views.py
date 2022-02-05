@@ -8,7 +8,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from login.models import MyUser
-from products.models import GridPrice, HardwareColor, Materials, TypeConstruction
+from products.models import GridPrice, HardwareColor, Materials, TypeConstruction, PriceCategory
 
 
 class ChangePrice(View):
@@ -22,6 +22,7 @@ class ChangePrice(View):
                 count = int(request.POST['count'])
                 multiply_value = float(request.POST['multiply'])
                 type_construct = request.POST['construct']
+                price_category = request.POST['price_category']
                 mult = HardwareColor.objects.get_or_none(id=multiply_value)
                 spec_type = TypeConstruction.objects.get(id=type_construct)
                 if spec_type.is_special:
@@ -29,7 +30,8 @@ class ChangePrice(View):
                     price = form_price * mult.multiplication * count * width * height
                 else:
                     grid_price = GridPrice.objects.get_or_none(width=width, height=height,
-                                                               type_construction=type_construct)
+                                                               type_construction=type_construct,
+                                                               price_category=price_category)
                     price = grid_price.price * mult.multiplication * count
             except ValueError as err:
                 return HttpResponse(0, status=200)

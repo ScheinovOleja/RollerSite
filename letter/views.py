@@ -14,7 +14,7 @@ def get_send(request):
 
 def send_tg_mail(request):
     loop = asyncio.new_event_loop()
-    bot_token = '5182579493:AAH7Yor8nNC2rjL1pb-XafoKfxJxitPyni8'
+    bot_token = '5274582756:AAG6bi8rD4i1cT6XXRVgDZysccacbw4Gx44'
     bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
     markup = types.InlineKeyboardMarkup()
     message = f"Письмо с сайта:\n" \

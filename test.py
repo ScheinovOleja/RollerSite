@@ -8,27 +8,6 @@
 from django.db import models
 
 
-class AdminToolsDashboardPreferences(models.Model):
-    data = models.TextField()
-    dashboard_id = models.CharField(max_length=100)
-    user = models.ForeignKey('LoginMyuser', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'admin_tools_dashboard_preferences'
-        unique_together = (('user', 'dashboard_id'),)
-
-
-class AdminToolsMenuBookmark(models.Model):
-    url = models.CharField(max_length=255)
-    title = models.CharField(max_length=255)
-    user = models.ForeignKey('LoginMyuser', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'admin_tools_menu_bookmark'
-
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -38,6 +17,7 @@ class AuthGroup(models.Model):
 
 
 class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
     permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
@@ -48,9 +28,9 @@ class AuthGroupPermissions(models.Model):
 
 
 class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
     codename = models.CharField(max_length=100)
-    name = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -130,6 +110,7 @@ class Bootstrap4CarouselBootstrap4Carousel(models.Model):
 class Bootstrap4CarouselBootstrap4Carouselslide(models.Model):
     template = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
+    external_link = models.CharField(max_length=2040)
     anchor = models.CharField(max_length=255)
     mailto = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
@@ -141,7 +122,6 @@ class Bootstrap4CarouselBootstrap4Carouselslide(models.Model):
     carousel_image = models.ForeignKey('FilerImage', models.DO_NOTHING, blank=True, null=True)
     internal_link = models.ForeignKey('CmsPage', models.DO_NOTHING, blank=True, null=True)
     file_link = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
-    external_link = models.CharField(max_length=2040)
 
     class Meta:
         managed = False
@@ -290,6 +270,7 @@ class Bootstrap4JumbotronBootstrap4Jumbotron(models.Model):
 class Bootstrap4LinkBootstrap4Link(models.Model):
     template = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
+    external_link = models.CharField(max_length=2040)
     anchor = models.CharField(max_length=255)
     mailto = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
@@ -305,7 +286,6 @@ class Bootstrap4LinkBootstrap4Link(models.Model):
     icon_left = models.CharField(max_length=255)
     icon_right = models.CharField(max_length=255)
     file_link = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
-    external_link = models.CharField(max_length=2040)
 
     class Meta:
         managed = False
@@ -358,11 +338,12 @@ class Bootstrap4MediaBootstrap4Mediabody(models.Model):
 class Bootstrap4PictureBootstrap4Picture(models.Model):
     template = models.CharField(max_length=255)
     external_picture = models.CharField(max_length=255, blank=True, null=True)
-    width = models.PositiveIntegerField(blank=True, null=True)
-    height = models.PositiveIntegerField(blank=True, null=True)
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
     alignment = models.CharField(max_length=255)
     caption_text = models.TextField(blank=True, null=True)
     attributes = models.TextField()
+    link_url = models.CharField(max_length=2040, blank=True, null=True)
     link_target = models.CharField(max_length=255)
     link_attributes = models.TextField()
     use_automatic_scaling = models.BooleanField()
@@ -377,7 +358,6 @@ class Bootstrap4PictureBootstrap4Picture(models.Model):
     picture = models.ForeignKey('FilerImage', models.DO_NOTHING, blank=True, null=True)
     thumbnail_options = models.ForeignKey('FilerThumbnailoption', models.DO_NOTHING, blank=True, null=True)
     use_responsive_image = models.CharField(max_length=7)
-    link_url = models.CharField(max_length=2040, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -389,7 +369,7 @@ class Bootstrap4TabsBootstrap4Tab(models.Model):
     template = models.CharField(max_length=255)
     tab_type = models.CharField(max_length=255)
     tab_alignment = models.CharField(max_length=255)
-    tab_index = models.PositiveIntegerField(blank=True, null=True)
+    tab_index = models.IntegerField(blank=True, null=True)
     tab_effect = models.CharField(max_length=255)
     tag_type = models.CharField(max_length=255)
     attributes = models.TextField()
@@ -425,9 +405,9 @@ class Bootstrap4UtilitiesBootstrap4Spacing(models.Model):
 
 
 class CmsAliaspluginmodel(models.Model):
+    cmsplugin_ptr = models.OneToOneField('CmsCmsplugin', models.DO_NOTHING, primary_key=True)
     plugin = models.ForeignKey('CmsCmsplugin', models.DO_NOTHING, blank=True, null=True)
     alias_placeholder = models.ForeignKey('CmsPlaceholder', models.DO_NOTHING, blank=True, null=True)
-    cmsplugin_ptr = models.OneToOneField('CmsCmsplugin', models.DO_NOTHING, primary_key=True)
 
     class Meta:
         managed = False
@@ -435,16 +415,16 @@ class CmsAliaspluginmodel(models.Model):
 
 
 class CmsCmsplugin(models.Model):
+    position = models.SmallIntegerField()
     language = models.CharField(max_length=15)
     plugin_type = models.CharField(max_length=50)
     creation_date = models.DateTimeField()
     changed_date = models.DateTimeField()
-    placeholder = models.ForeignKey('CmsPlaceholder', models.DO_NOTHING, blank=True, null=True)
-    depth = models.PositiveIntegerField()
-    numchild = models.PositiveIntegerField()
-    path = models.CharField(unique=True, max_length=255)
-    position = models.PositiveSmallIntegerField()
     parent = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    placeholder = models.ForeignKey('CmsPlaceholder', models.DO_NOTHING, blank=True, null=True)
+    depth = models.IntegerField()
+    numchild = models.IntegerField()
+    path = models.CharField(unique=True, max_length=255)
 
     class Meta:
         managed = False
@@ -470,6 +450,7 @@ class CmsGlobalpagepermission(models.Model):
 
 
 class CmsGlobalpagepermissionSites(models.Model):
+    id = models.BigAutoField(primary_key=True)
     globalpagepermission = models.ForeignKey(CmsGlobalpagepermission, models.DO_NOTHING)
     site = models.ForeignKey('DjangoSite', models.DO_NOTHING)
 
@@ -499,9 +480,9 @@ class CmsPage(models.Model):
     publisher_is_draft = models.BooleanField()
     languages = models.CharField(max_length=255, blank=True, null=True)
     xframe_options = models.IntegerField()
+    publisher_public = models.OneToOneField('self', models.DO_NOTHING, blank=True, null=True)
     is_page_type = models.BooleanField()
     node = models.ForeignKey('CmsTreenode', models.DO_NOTHING)
-    publisher_public = models.OneToOneField('self', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -510,6 +491,7 @@ class CmsPage(models.Model):
 
 
 class CmsPagePlaceholders(models.Model):
+    id = models.BigAutoField(primary_key=True)
     page = models.ForeignKey(CmsPage, models.DO_NOTHING)
     placeholder = models.ForeignKey('CmsPlaceholder', models.DO_NOTHING)
 
@@ -557,8 +539,8 @@ class CmsPageusergroup(models.Model):
 
 
 class CmsPlaceholder(models.Model):
-    default_width = models.PositiveSmallIntegerField(blank=True, null=True)
     slot = models.CharField(max_length=255)
+    default_width = models.SmallIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -566,9 +548,9 @@ class CmsPlaceholder(models.Model):
 
 
 class CmsPlaceholderreference(models.Model):
+    cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
     name = models.CharField(max_length=255)
     placeholder_ref = models.ForeignKey(CmsPlaceholder, models.DO_NOTHING, blank=True, null=True)
-    cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
 
     class Meta:
         managed = False
@@ -595,6 +577,7 @@ class CmsTitle(models.Model):
     title = models.CharField(max_length=255)
     page_title = models.CharField(max_length=255, blank=True, null=True)
     menu_title = models.CharField(max_length=255, blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
     slug = models.CharField(max_length=255)
     path = models.CharField(max_length=255)
     has_url_overwrite = models.BooleanField()
@@ -604,7 +587,6 @@ class CmsTitle(models.Model):
     publisher_is_draft = models.BooleanField()
     publisher_state = models.SmallIntegerField()
     page = models.ForeignKey(CmsPage, models.DO_NOTHING)
-    meta_description = models.TextField(blank=True, null=True)
     publisher_public = models.OneToOneField('self', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -615,8 +597,8 @@ class CmsTitle(models.Model):
 
 class CmsTreenode(models.Model):
     path = models.CharField(unique=True, max_length=255)
-    depth = models.PositiveIntegerField()
-    numchild = models.PositiveIntegerField()
+    depth = models.IntegerField()
+    numchild = models.IntegerField()
     parent = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey('DjangoSite', models.DO_NOTHING)
 
@@ -643,11 +625,33 @@ class CmsUsersettings(models.Model):
         db_table = 'cms_usersettings'
 
 
+class CompanyAllconstruct(models.Model):
+    cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
+    image_file = models.CharField(max_length=100)
+    image = models.CharField(max_length=9999999)
+    category = models.CharField(max_length=64)
+    type_construct = models.ForeignKey(CmsPage, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'company_allconstruct'
+
+
+class CompanyConstruct(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    content = models.TextField(blank=True, null=True)
+    name = models.OneToOneField(CompanyAllconstruct, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'company_construct'
+
+
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
     object_repr = models.CharField(max_length=200)
-    action_flag = models.PositiveSmallIntegerField()
+    action_flag = models.SmallIntegerField()
     change_message = models.TextField()
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey('LoginMyuser', models.DO_NOTHING)
@@ -668,6 +672,7 @@ class DjangoContentType(models.Model):
 
 
 class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
     app = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     applied = models.DateTimeField()
@@ -688,8 +693,8 @@ class DjangoSession(models.Model):
 
 
 class DjangoSite(models.Model):
-    name = models.CharField(max_length=50)
     domain = models.CharField(unique=True, max_length=100)
+    name = models.CharField(max_length=50)
 
     class Meta:
         managed = False
@@ -698,13 +703,13 @@ class DjangoSite(models.Model):
 
 class DjangocmsFileFile(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
-    file_src = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
-    attributes = models.TextField()
-    template = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255)
     link_target = models.CharField(max_length=255)
     link_title = models.CharField(max_length=255)
+    file_src_id = models.BigIntegerField(blank=True, null=True)
+    attributes = models.TextField()
+    template = models.CharField(max_length=255)
     show_file_size = models.BooleanField()
-    file_name = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -717,7 +722,7 @@ class DjangocmsFileFolder(models.Model):
     show_file_size = models.BooleanField()
     attributes = models.TextField()
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
-    folder_src = models.ForeignKey('FilerFolder', models.DO_NOTHING, blank=True, null=True)
+    folder_src_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -726,7 +731,8 @@ class DjangocmsFileFolder(models.Model):
 
 class DjangocmsGooglemapGooglemap(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
-    zoom = models.PositiveSmallIntegerField()
+    title = models.CharField(max_length=255)
+    zoom = models.SmallIntegerField()
     lat = models.FloatField(blank=True, null=True)
     lng = models.FloatField(blank=True, null=True)
     width = models.CharField(max_length=6)
@@ -744,7 +750,6 @@ class DjangocmsGooglemapGooglemap(models.Model):
     rotate_control = models.BooleanField()
     scale_control = models.BooleanField()
     template = models.CharField(max_length=255)
-    title = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -756,10 +761,10 @@ class DjangocmsGooglemapGooglemapmarker(models.Model):
     title = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     lat = models.FloatField(blank=True, null=True)
+    lng = models.FloatField(blank=True, null=True)
     show_content = models.BooleanField()
     info_content = models.TextField()
     icon = models.ForeignKey('FilerImage', models.DO_NOTHING, blank=True, null=True)
-    lng = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -793,15 +798,15 @@ class DjangocmsIconIcon(models.Model):
 class DjangocmsLinkLink(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
     name = models.CharField(max_length=255)
+    external_link = models.CharField(max_length=2040)
     anchor = models.CharField(max_length=255)
     mailto = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     target = models.CharField(max_length=255)
+    internal_link = models.ForeignKey(CmsPage, models.DO_NOTHING, blank=True, null=True)
     attributes = models.TextField()
     template = models.CharField(max_length=255)
-    internal_link = models.ForeignKey(CmsPage, models.DO_NOTHING, blank=True, null=True)
     file_link = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
-    external_link = models.CharField(max_length=2040)
 
     class Meta:
         managed = False
@@ -810,8 +815,11 @@ class DjangocmsLinkLink(models.Model):
 
 class DjangocmsPicturePicture(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
-    height = models.PositiveIntegerField(blank=True, null=True)
-    width = models.PositiveIntegerField(blank=True, null=True)
+    link_url = models.CharField(max_length=2040, blank=True, null=True)
+    alignment = models.CharField(max_length=255)
+    link_page = models.ForeignKey(CmsPage, models.DO_NOTHING, blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
+    width = models.IntegerField(blank=True, null=True)
     picture = models.ForeignKey('FilerImage', models.DO_NOTHING, blank=True, null=True)
     attributes = models.TextField()
     caption_text = models.TextField(blank=True, null=True)
@@ -824,10 +832,7 @@ class DjangocmsPicturePicture(models.Model):
     thumbnail_options = models.ForeignKey('FilerThumbnailoption', models.DO_NOTHING, blank=True, null=True)
     external_picture = models.CharField(max_length=255, blank=True, null=True)
     template = models.CharField(max_length=255)
-    alignment = models.CharField(max_length=255)
-    link_page = models.ForeignKey(CmsPage, models.DO_NOTHING, blank=True, null=True)
     use_responsive_image = models.CharField(max_length=7)
-    link_url = models.CharField(max_length=2040, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -835,6 +840,7 @@ class DjangocmsPicturePicture(models.Model):
 
 
 class DjangocmsSnippetSnippet(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=255)
     html = models.TextField()
     template = models.CharField(max_length=255)
@@ -846,8 +852,8 @@ class DjangocmsSnippetSnippet(models.Model):
 
 
 class DjangocmsSnippetSnippetptr(models.Model):
-    snippet = models.ForeignKey(DjangocmsSnippetSnippet, models.DO_NOTHING)
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
+    snippet = models.ForeignKey(DjangocmsSnippetSnippet, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -858,14 +864,14 @@ class DjangocmsStyleStyle(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
     class_name = models.CharField(max_length=255)
     tag_type = models.CharField(max_length=255)
-    padding_left = models.PositiveSmallIntegerField(blank=True, null=True)
-    padding_right = models.PositiveSmallIntegerField(blank=True, null=True)
-    padding_top = models.PositiveSmallIntegerField(blank=True, null=True)
-    padding_bottom = models.PositiveSmallIntegerField(blank=True, null=True)
-    margin_left = models.PositiveSmallIntegerField(blank=True, null=True)
-    margin_right = models.PositiveSmallIntegerField(blank=True, null=True)
-    margin_top = models.PositiveSmallIntegerField(blank=True, null=True)
-    margin_bottom = models.PositiveSmallIntegerField(blank=True, null=True)
+    padding_left = models.SmallIntegerField(blank=True, null=True)
+    padding_right = models.SmallIntegerField(blank=True, null=True)
+    padding_top = models.SmallIntegerField(blank=True, null=True)
+    padding_bottom = models.SmallIntegerField(blank=True, null=True)
+    margin_left = models.SmallIntegerField(blank=True, null=True)
+    margin_right = models.SmallIntegerField(blank=True, null=True)
+    margin_top = models.SmallIntegerField(blank=True, null=True)
+    margin_bottom = models.SmallIntegerField(blank=True, null=True)
     additional_classes = models.CharField(max_length=255)
     attributes = models.TextField()
     id_name = models.CharField(max_length=255)
@@ -878,8 +884,8 @@ class DjangocmsStyleStyle(models.Model):
 
 
 class DjangocmsTextCkeditorText(models.Model):
-    body = models.TextField()
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
+    body = models.TextField()
 
     class Meta:
         managed = False
@@ -905,7 +911,7 @@ class DjangocmsVideoVideosource(models.Model):
     text_title = models.CharField(max_length=255)
     text_description = models.TextField()
     attributes = models.TextField()
-    source_file = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
+    source_file_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -918,7 +924,7 @@ class DjangocmsVideoVideotrack(models.Model):
     srclang = models.CharField(max_length=255)
     label = models.CharField(max_length=255)
     attributes = models.TextField()
-    src = models.ForeignKey('FilerFile', models.DO_NOTHING, blank=True, null=True)
+    src_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -950,8 +956,8 @@ class EasyThumbnailsThumbnail(models.Model):
 
 class EasyThumbnailsThumbnaildimensions(models.Model):
     thumbnail = models.OneToOneField(EasyThumbnailsThumbnail, models.DO_NOTHING)
-    width = models.PositiveIntegerField(blank=True, null=True)
-    height = models.PositiveIntegerField(blank=True, null=True)
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -959,6 +965,7 @@ class EasyThumbnailsThumbnaildimensions(models.Model):
 
 
 class FilerClipboard(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey('LoginMyuser', models.DO_NOTHING)
 
     class Meta:
@@ -967,6 +974,7 @@ class FilerClipboard(models.Model):
 
 
 class FilerClipboarditem(models.Model):
+    id = models.BigAutoField(primary_key=True)
     clipboard = models.ForeignKey(FilerClipboard, models.DO_NOTHING)
     file = models.ForeignKey('FilerFile', models.DO_NOTHING)
 
@@ -976,6 +984,7 @@ class FilerClipboarditem(models.Model):
 
 
 class FilerFile(models.Model):
+    id = models.BigAutoField(primary_key=True)
     file = models.CharField(max_length=255, blank=True, null=True)
     field_file_size = models.BigIntegerField(db_column='_file_size', blank=True, null=True)  # Field renamed because it started with '_'.
     sha1 = models.CharField(max_length=40)
@@ -997,14 +1006,15 @@ class FilerFile(models.Model):
 
 
 class FilerFolder(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     uploaded_at = models.DateTimeField()
     created_at = models.DateTimeField()
     modified_at = models.DateTimeField()
-    lft = models.PositiveIntegerField()
-    rght = models.PositiveIntegerField()
-    tree_id = models.PositiveIntegerField()
-    level = models.PositiveIntegerField()
+    lft = models.IntegerField()
+    rght = models.IntegerField()
+    tree_id = models.IntegerField()
+    level = models.IntegerField()
     owner = models.ForeignKey('LoginMyuser', models.DO_NOTHING, blank=True, null=True)
     parent = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
 
@@ -1015,6 +1025,7 @@ class FilerFolder(models.Model):
 
 
 class FilerFolderpermission(models.Model):
+    id = models.BigAutoField(primary_key=True)
     type = models.SmallIntegerField()
     everybody = models.BooleanField()
     can_edit = models.SmallIntegerField(blank=True, null=True)
@@ -1032,6 +1043,7 @@ class FilerFolderpermission(models.Model):
 class FilerImage(models.Model):
     file_ptr = models.OneToOneField(FilerFile, models.DO_NOTHING, primary_key=True)
     field_height = models.FloatField(db_column='_height', blank=True, null=True)  # Field renamed because it started with '_'.
+    field_width = models.FloatField(db_column='_width', blank=True, null=True)  # Field renamed because it started with '_'.
     date_taken = models.DateTimeField(blank=True, null=True)
     default_alt_text = models.CharField(max_length=255, blank=True, null=True)
     default_caption = models.CharField(max_length=255, blank=True, null=True)
@@ -1039,7 +1051,6 @@ class FilerImage(models.Model):
     must_always_publish_author_credit = models.BooleanField()
     must_always_publish_copyright = models.BooleanField()
     subject_location = models.CharField(max_length=64)
-    field_width = models.FloatField(db_column='_width', blank=True, null=True)  # Field renamed because it started with '_'.
 
     class Meta:
         managed = False
@@ -1047,6 +1058,7 @@ class FilerImage(models.Model):
 
 
 class FilerThumbnailoption(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     width = models.IntegerField()
     height = models.IntegerField()
@@ -1059,6 +1071,7 @@ class FilerThumbnailoption(models.Model):
 
 
 class LoginMyuser(models.Model):
+    id = models.BigAutoField(primary_key=True)
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.BooleanField()
@@ -1066,12 +1079,14 @@ class LoginMyuser(models.Model):
     email = models.CharField(unique=True, max_length=254)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    patronymic = models.CharField(max_length=40)
+    address = models.CharField(max_length=255)
     avatar = models.TextField()
     is_active = models.BooleanField()
     is_staff = models.BooleanField()
     date_joined = models.DateTimeField()
-    address = models.CharField(max_length=255)
-    patronymic = models.CharField(max_length=40)
+    preferred_social_network = models.IntegerField(blank=True, null=True)
+    additional_information = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -1079,6 +1094,7 @@ class LoginMyuser(models.Model):
 
 
 class LoginMyuserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
     myuser = models.ForeignKey(LoginMyuser, models.DO_NOTHING)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
 
@@ -1089,6 +1105,7 @@ class LoginMyuserGroups(models.Model):
 
 
 class LoginMyuserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
     myuser = models.ForeignKey(LoginMyuser, models.DO_NOTHING)
     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
 
@@ -1099,10 +1116,11 @@ class LoginMyuserUserPermissions(models.Model):
 
 
 class LoginRegisterfrommessangers(models.Model):
+    id = models.BigAutoField(primary_key=True)
     messenger = models.IntegerField()
     id_messenger = models.CharField(unique=True, max_length=100)
     user = models.ForeignKey(LoginMyuser, models.DO_NOTHING, blank=True, null=True)
-    phone = models.CharField(unique=True, max_length=12)
+    phone = models.CharField(max_length=12)
 
     class Meta:
         managed = False
@@ -1110,8 +1128,9 @@ class LoginRegisterfrommessangers(models.Model):
 
 
 class MenusCachekey(models.Model):
+    id = models.BigAutoField(primary_key=True)
     language = models.CharField(max_length=255)
-    site = models.PositiveIntegerField()
+    site = models.IntegerField()
     key = models.CharField(max_length=255)
 
     class Meta:
@@ -1120,16 +1139,22 @@ class MenusCachekey(models.Model):
 
 
 class OrdersOrder(models.Model):
+    id = models.BigAutoField(primary_key=True)
     num_order = models.CharField(unique=True, max_length=64)
     order_price = models.FloatField()
     payment_state = models.BooleanField()
     contract = models.CharField(max_length=100)
     manager = models.ForeignKey(LoginMyuser, models.DO_NOTHING)
     user = models.ForeignKey(LoginMyuser, models.DO_NOTHING)
-    terms_of_readiness = models.IntegerField(blank=True, null=True)
-    installation_time = models.IntegerField(blank=True, null=True)
+    terms_of_readiness = models.IntegerField()
+    installation_time = models.IntegerField()
     is_cancel = models.BooleanField()
     is_notified = models.BooleanField()
+    delivery_price = models.FloatField()
+    extra_charge = models.FloatField()
+    installation_price = models.FloatField()
+    note = models.TextField(blank=True, null=True)
+    prepayment = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -1137,16 +1162,117 @@ class OrdersOrder(models.Model):
 
 
 class OrdersStateorder(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    status = models.IntegerField(blank=True, null=True)
     date_time = models.DateTimeField()
     order = models.ForeignKey(OrdersOrder, models.DO_NOTHING, blank=True, null=True)
-    status = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'orders_stateorder'
 
 
+class ProductsColormaterial(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    color = models.CharField(max_length=128)
+
+    class Meta:
+        managed = False
+        db_table = 'products_colormaterial'
+
+
+class ProductsControltype(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    type_control = models.CharField(max_length=128)
+
+    class Meta:
+        managed = False
+        db_table = 'products_controltype'
+
+
+class ProductsGridprice(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    width = models.FloatField()
+    height = models.FloatField()
+    price = models.FloatField()
+    price_category = models.ForeignKey('ProductsPricecategory', models.DO_NOTHING)
+    type_construction = models.ForeignKey('ProductsTypeconstruction', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'products_gridprice'
+
+
+class ProductsHardwarecolor(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    color = models.CharField(max_length=32)
+    multiplication = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'products_hardwarecolor'
+
+
+class ProductsMaterials(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=128)
+
+    class Meta:
+        managed = False
+        db_table = 'products_materials'
+
+
+class ProductsMounttype(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    mount_type = models.CharField(max_length=128)
+
+    class Meta:
+        managed = False
+        db_table = 'products_mounttype'
+
+
+class ProductsPricecategory(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=2)
+
+    class Meta:
+        managed = False
+        db_table = 'products_pricecategory'
+
+
+class ProductsProductlist(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    width = models.FloatField()
+    height = models.FloatField()
+    count = models.IntegerField()
+    control_length = models.FloatField()
+    price = models.FloatField()
+    control_type = models.ForeignKey(ProductsControltype, models.DO_NOTHING)
+    hardware_color = models.ForeignKey(ProductsHardwarecolor, models.DO_NOTHING)
+    material = models.ForeignKey(ProductsMaterials, models.DO_NOTHING)
+    mount_type = models.ForeignKey(ProductsMounttype, models.DO_NOTHING)
+    order = models.ForeignKey(OrdersOrder, models.DO_NOTHING)
+    type_construction = models.ForeignKey('ProductsTypeconstruction', models.DO_NOTHING)
+    price_category = models.ForeignKey(ProductsPricecategory, models.DO_NOTHING)
+    color_material = models.ForeignKey(ProductsColormaterial, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'products_productlist'
+
+
+class ProductsTypeconstruction(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=128)
+    is_special = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'products_typeconstruction'
+
+
 class ReviewsReview(models.Model):
+    id = models.BigAutoField(primary_key=True)
     review = models.TextField()
     is_confirm = models.IntegerField()
     order = models.ForeignKey(OrdersOrder, models.DO_NOTHING)
@@ -1172,6 +1298,15 @@ class RollercmsBackcall(models.Model):
         db_table = 'rollercms_backcall'
 
 
+class RollercmsCategoriespost(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    category = models.CharField(max_length=64)
+
+    class Meta:
+        managed = False
+        db_table = 'rollercms_categoriespost'
+
+
 class RollercmsCreditandpartnership(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
     image_1 = models.CharField(max_length=100)
@@ -1190,6 +1325,7 @@ class RollercmsCreditandpartnership(models.Model):
 
 
 class RollercmsGallery(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=128)
 
     class Meta:
@@ -1203,14 +1339,26 @@ class RollercmsMygooglemap(models.Model):
     address = models.CharField(max_length=64)
     phone = models.CharField(max_length=64)
     email = models.CharField(max_length=64)
-    map_src = models.CharField(max_length=256)
+    map_src = models.CharField(max_length=1024)
 
     class Meta:
         managed = False
         db_table = 'rollercms_mygooglemap'
 
 
+class RollercmsMylettercompany(models.Model):
+    cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
+    big_main_text = models.CharField(max_length=256)
+    main_text = models.CharField(max_length=256)
+    minor_text = models.CharField(max_length=256)
+
+    class Meta:
+        managed = False
+        db_table = 'rollercms_mylettercompany'
+
+
 class RollercmsPhoto(models.Model):
+    id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=64, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     file = models.CharField(max_length=100)
@@ -1222,9 +1370,24 @@ class RollercmsPhoto(models.Model):
         db_table = 'rollercms_photo'
 
 
+class RollercmsPost(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title_post = models.CharField(max_length=64)
+    image = models.CharField(max_length=100)
+    category = models.ForeignKey(RollercmsCategoriespost, models.DO_NOTHING)
+    content = models.TextField(blank=True, null=True)
+    short_description = models.CharField(max_length=128)
+    date_create = models.DateField()
+
+    class Meta:
+        managed = False
+        db_table = 'rollercms_post'
+
+
 class RollercmsSlider(models.Model):
     cmsplugin_ptr = models.OneToOneField(CmsCmsplugin, models.DO_NOTHING, primary_key=True)
     gallery = models.ForeignKey(RollercmsGallery, models.DO_NOTHING, blank=True, null=True)
+    height = models.IntegerField()
 
     class Meta:
         managed = False

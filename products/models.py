@@ -28,8 +28,6 @@ class GridPrice(models.Model):
     price = models.FloatField('Цена')
     type_construction = models.ForeignKey('TypeConstruction', on_delete=models.DO_NOTHING,
                                           verbose_name='Тип конструкции', null=False, blank=False)
-    material = models.ForeignKey('Materials', on_delete=models.DO_NOTHING, null=False, blank=False,
-                                 verbose_name='Материал')
     price_category = models.ForeignKey(PriceCategory, on_delete=models.DO_NOTHING,
                                        verbose_name='Ценовая категория', null=False, blank=False)
 
@@ -44,12 +42,21 @@ class Materials(models.Model):
 
     objects = MyManager()
     name = models.CharField(max_length=128, verbose_name='Название материала', null=False, blank=False)
-    color = models.CharField('Цвет материала', max_length=32, null=False, blank=False)
-    type_construction = models.ForeignKey('TypeConstruction', null=False, blank=False, on_delete=models.DO_NOTHING,
-                                          verbose_name='Тип конструкции')
 
     def __str__(self):
-        return f'{self.color}/{self.name}/{self.type_construction}'
+        return f'{self.name}'
+
+
+class ColorMaterial(models.Model):
+    class Meta:
+        verbose_name = 'Цвет материала'
+        verbose_name_plural = 'Все цвета материалов'
+
+    objects = MyManager()
+    color = models.CharField(max_length=128, verbose_name='Цвет материала', null=False, blank=False)
+
+    def __str__(self):
+        return self.color
 
 
 class TypeConstruction(models.Model):
@@ -89,18 +96,6 @@ class MountType(models.Model):
         return self.mount_type
 
 
-class TypeFabricMeasurement(models.Model):
-    class Meta:
-        verbose_name = 'Тип замера'
-        verbose_name_plural = 'Все типы замеров'
-
-    objects = MyManager()
-    type_measurement = models.CharField(max_length=128, verbose_name='Тип замера', null=False, blank=False)
-
-    def __str__(self):
-        return self.type_measurement
-
-
 class HardwareColor(models.Model):
     class Meta:
         verbose_name = 'Цвет фурнитуры'
@@ -126,6 +121,10 @@ class ProductList(models.Model):
                                           verbose_name='Тип конструкции')
     material = models.ForeignKey(Materials, on_delete=models.DO_NOTHING, null=False, blank=False,
                                  verbose_name='Материал')
+    color_material = models.ForeignKey(ColorMaterial, on_delete=models.DO_NOTHING, null=False, blank=False,
+                                       verbose_name='Цвет материала')
+    price_category = models.ForeignKey(PriceCategory, on_delete=models.DO_NOTHING, null=False, blank=False,
+                                       verbose_name='Ценовая категория')
     width = models.FloatField('Ширина', null=False, blank=False)
     height = models.FloatField('Высота', null=False, blank=False)
     count = models.IntegerField('Количество', null=False, blank=False)
@@ -136,26 +135,23 @@ class ProductList(models.Model):
                                        null=False, blank=False)
     mount_type = models.ForeignKey(MountType, on_delete=models.DO_NOTHING, null=False, blank=False,
                                    verbose_name='Тип крепления')
-    type_of_fabric_measurement = models.ForeignKey(TypeFabricMeasurement, on_delete=models.DO_NOTHING, null=False,
-                                                   blank=False, verbose_name='Тип замера по ткани')
-
     price = models.FloatField('Цена', null=False, blank=False)
 
     def __str__(self):
         return f'{self.type_construction} - {self.material} - {self.price}'
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        width = self.width
-        height = self.height
-        count = self.count
-        mult = self.hardware_color.multiplication
-        type_construct = self.type_construction_id
-        spec_type = TypeConstruction.objects.get(id=type_construct)
-        if spec_type.is_special:
-            self.price = self.price * mult * count
-        else:
-            grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
-            self.price = grid_price.price * mult * count
-        super(ProductList, self).save(force_insert=False, force_update=False, using=None,
-                                      update_fields=None)
+    # def save(self, force_insert=False, force_update=False, using=None,
+        #      update_fields=None):
+        # width = self.width
+        # height = self.height
+        # count = self.count
+        # mult = self.hardware_color.multiplication
+        # type_construct = self.type_construction_id
+        # spec_type = TypeConstruction.objects.get(id=type_construct)
+        # if spec_type.is_special:
+        #     self.price = self.price * mult * count
+        # else:
+        #     grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
+        #     self.price = grid_price.price * mult * count
+        # super(ProductList, self).save(force_insert=False, force_update=False, using=None,
+        #                               update_fields=None)
