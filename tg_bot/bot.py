@@ -6,13 +6,10 @@ from aiogram import Dispatcher
 from aiogram.utils import executor
 
 from tg_bot import dp, loop
-from tg_bot.handlers import register_back_call, register_registration, register_all_message, \
+from tg_bot.handlers import register_registration, register_all_message, \
     register_reviews
 
 sys.path.append('/root/RollerSite/')
-
-async def register_handler_back_call(dispatcher: Dispatcher):
-    register_back_call(dispatcher)
 
 
 async def register_handler_registration(dispatcher: Dispatcher):
@@ -29,7 +26,6 @@ async def register_reviews_handler(dispatcher: Dispatcher):
 
 async def main(dispatcher: Dispatcher):
     await register_reviews_handler(dispatcher)
-    await register_handler_back_call(dispatcher)
     await register_handler_registration(dispatcher)
     await register_message_handler(dispatcher)
 
