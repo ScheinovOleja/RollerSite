@@ -1,7 +1,8 @@
 from cms.admin.pageadmin import PageTypeAdmin, PageAdmin
+from cms.admin.permissionadmin import GlobalPagePermissionAdmin
 from cms.admin.settingsadmin import SettingsAdmin
 from cms.admin.static_placeholder import StaticPlaceholderAdmin
-from cms.models import Page, PageType, StaticPlaceholder, UserSettings
+from cms.models import Page, PageType, StaticPlaceholder, UserSettings, GlobalPagePermission, PagePermission
 from django.contrib import admin
 
 # Register your models here.
@@ -73,3 +74,5 @@ admin.site.register(UserSettings, SettingsAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(PageType, PageTypeAdmin)
 admin.site.register(StaticPlaceholder, StaticPlaceholderAdmin)
+
+admin.site.register(PagePermission)
