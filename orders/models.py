@@ -48,6 +48,7 @@ class Order(models.Model):
         (False, 'Ожидает оплаты'),
     )
 
+    create_date = models.DateField(auto_created=True, auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False, blank=False,
                              verbose_name='Заказчик', limit_choices_to={'is_staff': False})
     num_order = models.CharField(max_length=64, unique=True, verbose_name='Номер заказа')

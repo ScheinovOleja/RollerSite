@@ -20,3 +20,6 @@ class Review(models.Model):
     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, verbose_name='Заказ отзыва')
     review = models.TextField(max_length=5000, verbose_name='Текст отзыва')
     is_confirm = models.IntegerField(choices=CONFIRM_STATUS, default=CONFIRM_STATUS[0][0], verbose_name='Статус отзыва')
+
+    def __str__(self):
+        return f'{self.order} - {self.CONFIRM_STATUS[self.is_confirm][1]}'

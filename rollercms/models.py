@@ -100,8 +100,8 @@ class CategoriesPost(models.Model):
         return f'{self.category}'
 
     class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Все категории'
+        verbose_name = 'Категория поста'
+        verbose_name_plural = 'Все категории постов'
 
 
 class Post(models.Model):
@@ -118,5 +118,5 @@ class Post(models.Model):
         return f'{self.title_post}'
 
     class Meta:
-        verbose_name = 'Пост блога'
-        verbose_name_plural = 'Все посты блога'
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Все посты'

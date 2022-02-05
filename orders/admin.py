@@ -84,6 +84,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [ProductInline, OrderStateInline]
     change_form_template = 'admin/orders/change_form.html'
     form = UserAutocompleteForm
+    date_hierarchy = 'create_date'
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         order = Order.objects.get(id=object_id)

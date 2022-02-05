@@ -32,3 +32,8 @@ class MountTypeAdmin(admin.ModelAdmin):
 
 class HardwareColorAdmin(admin.ModelAdmin):
     search_fields = ['color']
+
+
+class ProductListAdmin(admin.ModelAdmin):
+    search_fields = ['order']
+    date_hierarchy = 'order__create_date'

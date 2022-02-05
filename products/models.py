@@ -138,7 +138,7 @@ class ProductList(models.Model):
     price = models.FloatField('Цена', null=False, blank=False)
 
     def __str__(self):
-        return f'{self.type_construction} - {self.material} - {self.price}'
+        return f'{self.order} - {self.price} руб.'
 
     # def save(self, force_insert=False, force_update=False, using=None,
         #      update_fields=None):

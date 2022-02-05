@@ -16,7 +16,7 @@ from login.models import MyUser
 from orders.admin import OrderAdmin
 from orders.models import Order
 from products.admin import GridPriceAdmin, MaterialsAdmin, ColorMaterialAdmin, HardwareColorAdmin, MountTypeAdmin, \
-    ControlTypeAdmin, TypeConstructionAdmin
+    ControlTypeAdmin, TypeConstructionAdmin, ProductListAdmin
 from products.models import ProductList, GridPrice, Materials, TypeConstruction, ControlType, MountType, \
     PriceCategory, HardwareColor, ColorMaterial
 from reviews.admin import ReviewAdmin
@@ -53,7 +53,7 @@ admin.site = MyAdminSite()
 admin.site.register(Order, OrderAdmin)
 admin.site.register(MyUser, CustomUserAdmin)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(ProductList)
+admin.site.register(ProductList, ProductListAdmin)
 admin.site.register(TypeConstruction, TypeConstructionAdmin)
 admin.site.register(Materials, MaterialsAdmin)
 admin.site.register(ColorMaterial, ColorMaterialAdmin)
