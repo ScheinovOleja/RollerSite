@@ -111,7 +111,7 @@ class OrderAdmin(admin.ModelAdmin):
                                                                   stateorder__date_time__year=datetime.now().date().year
                                                                   ).last()
             if last_order_for_current_manager is None:
-                initials_manager = "".join(word[0].upper() for word in obj.user.get_full_name().split())
+                initials_manager = "".join(word[0].upper() for word in request.user.get_full_name().split())
                 obj.num_order = f'{initials_manager}01/{datetime.now().date().strftime("%d.%m.%y")}'
             else:
                 date = last_order_for_current_manager.num_order.split('/')[1]
