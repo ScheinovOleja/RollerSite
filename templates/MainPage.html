@@ -19,9 +19,7 @@
 	{% render_block "css" %}
 </head>
 <body class="page-body">
-{% if user.is_superuser %}
-	{% cms_toolbar %}
-{% endif %}
+{% cms_toolbar %}
 {% block header %}
 	<header class="main-header">
 		<div class="container">
