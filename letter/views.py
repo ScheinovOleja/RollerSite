@@ -1,6 +1,7 @@
 import asyncio
 
 from aiogram import Bot, types
+from django.http import HttpResponse
 from django.shortcuts import render
 
 
@@ -25,3 +26,4 @@ def send_tg_mail(request):
               f"{request.POST['text']}"
     loop.run_until_complete(bot.send_message(1907721147, message, reply_markup=markup))
     loop.close()
+    return HttpResponse(status=200)
