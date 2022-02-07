@@ -1,8 +1,7 @@
 from cms.admin.pageadmin import PageTypeAdmin, PageAdmin
-from cms.admin.permissionadmin import GlobalPagePermissionAdmin
 from cms.admin.settingsadmin import SettingsAdmin
 from cms.admin.static_placeholder import StaticPlaceholderAdmin
-from cms.models import Page, PageType, StaticPlaceholder, UserSettings, GlobalPagePermission, PagePermission
+from cms.models import Page, PageType, StaticPlaceholder, UserSettings, PagePermission
 from django.contrib import admin
 
 # Register your models here.
@@ -20,6 +19,8 @@ from products.admin import GridPriceAdmin, MaterialsAdmin, ColorMaterialAdmin, H
     ControlTypeAdmin, TypeConstructionAdmin, ProductListAdmin
 from products.models import ProductList, GridPrice, Materials, TypeConstruction, ControlType, MountType, \
     PriceCategory, HardwareColor, ColorMaterial
+from purchases.admin import ProfitabilityAdmin, IncomeAdmin, CostAdmin
+from purchases.models import Incoming, Costs, Profitability
 from reviews.admin import ReviewAdmin
 from reviews.models import Review
 from rollercms.admin import GalleryAdmin, PostAdmin
@@ -33,19 +34,8 @@ class AllConstructAdmin(admin.ModelAdmin):
 class MyAdminSite(AdminSite):
 
     def get_app_list(self, request):
-        """
-        Return a sorted list of all the installed apps that have been
-        registered in this site.
-        """
         app_dict = self._build_app_dict(request)
-        # Sort the apps alphabetically.
         app_list = list(app_dict.values())
-        # app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
-
-        # Sort the models alphabetically within each app.
-        # for app in app_list:
-        #    app['models'].sort(key=lambda x: x['name'])
-
         return app_list
 
 
@@ -69,6 +59,10 @@ admin.site.register(CategoriesPost)
 admin.site.register(Post, PostAdmin)
 admin.site.register(AllConstruct, AllConstructAdmin)
 admin.site.register(Construct)
+
+admin.site.register(Incoming, IncomeAdmin)
+admin.site.register(Costs, CostAdmin)
+admin.site.register(Profitability, ProfitabilityAdmin)
 
 admin.site.register(UserSettings, SettingsAdmin)
 admin.site.register(Page, PageAdmin)

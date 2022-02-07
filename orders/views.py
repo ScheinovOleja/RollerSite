@@ -1,11 +1,14 @@
 # Create your views here.
 import json
+import math
+from datetime import datetime
 
 from dal import autocomplete
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from pycbrf import ExchangeRates
 
 from login.models import MyUser
 from products.models import GridPrice, HardwareColor, Materials, TypeConstruction, PriceCategory
@@ -17,6 +20,9 @@ class ChangePrice(View):
     def post(self, request):
         if request.is_ajax():
             try:
+                today = datetime.now().date()
+                rates = ExchangeRates(today.strftime('%Y-%m-%d'))
+                usd = rates['USD']
                 width = float(request.POST['width'])
                 height = float(request.POST['height'])
                 count = int(request.POST['count'])
@@ -25,16 +31,18 @@ class ChangePrice(View):
                 price_category = request.POST['price_category']
                 mult = HardwareColor.objects.get_or_none(id=multiply_value)
                 spec_type = TypeConstruction.objects.get(id=type_construct)
+
                 if spec_type.is_special:
                     form_price = float(request.POST['price'])
-                    price = form_price * mult.multiplication * count * width * height
+                    price = (form_price * round(float(usd.rate), 0)) * mult.multiplication * count * width * height
                 else:
                     grid_price = GridPrice.objects.get_or_none(width=width, height=height,
                                                                type_construction=type_construct,
                                                                price_category=price_category)
-                    price = grid_price.price * mult.multiplication * count
+                    price = (grid_price.price * round(float(usd.rate), 0)) * mult.multiplication * count
             except ValueError as err:
                 return HttpResponse(0, status=200)
+            price = int(math.ceil(price / 10.0)) * 10
             return HttpResponse(price, status=200)
 
     @csrf_exempt

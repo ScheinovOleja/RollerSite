@@ -1,6 +1,6 @@
 let csrfToken;
 $(document).on('input', 'div.field-width, div.field-height, div.field-count, div.field-price', changeProduct)
-$(document).on('input', 'input#id_extra_charge, input#id_delivery_price, input#id_installation_price, input#id_prepayment', changeForm);
+$(document).on('input', 'input#id_extra_charge, input#id_delivery_price, input#id_installation_price', changeForm);
 $(document).on('DOMContentLoaded', function () {
     csrfToken = $("input[name='csrfmiddlewaretoken']").val();
 })
@@ -62,7 +62,13 @@ function changeForm(e) {
     countSum();
 }
 
-function changeProduct(e) {
+function sleep(ms) {
+    return new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+}
+
+async function changeProduct(e) {
     e.preventDefault();
     if (e.type === 'DOMSubtreeModified') {
         e.currentTarget = e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
@@ -77,6 +83,7 @@ function changeProduct(e) {
     let prod_sum = e.currentTarget.parentElement.querySelector('fieldset.module > .field-price > div.child_sum > div.readonly')
     let price_category = e.currentTarget.parentElement.querySelector('fieldset.module > .field-price_category > div > div > select')
     let price_value = price.value
+    await sleep(2000);
     let request = $.ajax({
         type: "POST", method: "POST", headers: {'X-CSRFToken': csrfToken}, mode: 'same-origin', data: {
             'width': width.value,

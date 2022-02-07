@@ -4,14 +4,6 @@ from django import forms
 from products.models import Materials, ProductList
 
 
-class PersonForm(forms.ModelForm):
-    class Meta:
-        model = Materials
-        fields = '__all__'
-        widgets = {
-            'material': autocomplete.ModelSelect2(url='material-autocomplete')
-        }
-
 
 class ProductListAutocompleteForm(forms.ModelForm):
     class Meta:

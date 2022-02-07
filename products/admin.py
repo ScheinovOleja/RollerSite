@@ -1,11 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from products.forms import PersonForm
 
 
 class GridPriceAdmin(admin.ModelAdmin):
-    form = PersonForm
+    ordering = ['type_construction']
 
 
 class MaterialsAdmin(admin.ModelAdmin):

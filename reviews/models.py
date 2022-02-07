@@ -7,8 +7,8 @@ from orders.models import Order
 
 class Review(models.Model):
     class Meta:
+        verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        verbose_name = 'Отзывы'
 
     CONFIRM_STATUS = (
         (0, 'Отзыв не подтвержден'),

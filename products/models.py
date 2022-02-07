@@ -32,7 +32,7 @@ class GridPrice(models.Model):
                                        verbose_name='Ценовая категория', null=False, blank=False)
 
     def __str__(self):
-        return f'{self.width}/{self.height} = {self.price}'
+        return f'{self.width}/{self.height} = {self.price}$'
 
 
 class Materials(models.Model):
@@ -123,7 +123,7 @@ class ProductList(models.Model):
                                  verbose_name='Материал')
     color_material = models.ForeignKey(ColorMaterial, on_delete=models.DO_NOTHING, null=False, blank=False,
                                        verbose_name='Цвет материала')
-    price_category = models.ForeignKey(PriceCategory, on_delete=models.DO_NOTHING, null=False, blank=False,
+    price_category = models.ForeignKey(PriceCategory, on_delete=models.DO_NOTHING, null=True, blank=True,
                                        verbose_name='Ценовая категория')
     width = models.FloatField('Ширина', null=False, blank=False)
     height = models.FloatField('Высота', null=False, blank=False)
@@ -139,19 +139,3 @@ class ProductList(models.Model):
 
     def __str__(self):
         return f'{self.order} - {self.price} руб.'
-
-    # def save(self, force_insert=False, force_update=False, using=None,
-        #      update_fields=None):
-        # width = self.width
-        # height = self.height
-        # count = self.count
-        # mult = self.hardware_color.multiplication
-        # type_construct = self.type_construction_id
-        # spec_type = TypeConstruction.objects.get(id=type_construct)
-        # if spec_type.is_special:
-        #     self.price = self.price * mult * count
-        # else:
-        #     grid_price = GridPrice.objects.get_or_none(width=width, height=height, type_construction=type_construct)
-        #     self.price = grid_price.price * mult * count
-        # super(ProductList, self).save(force_insert=False, force_update=False, using=None,
-        #                               update_fields=None)
