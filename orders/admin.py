@@ -120,8 +120,11 @@ class OrderAdmin(admin.ModelAdmin):
             month_profitability__year=income.date_income.year
         )
         profitability[0].income_in_month += income.sum
-        profitability[0].percent_profitability = round((profitability[0].income_in_month / profitability[
-            0].costs_in_month) * 100, 2)
+        try:
+            profitability[0].percent_profitability = round((profitability[0].income_in_month / profitability[
+                0].costs_in_month) * 100, 2)
+        except ZeroDivisionError:
+            profitability[0].percent_profitability = 0
         profitability[0].save()
 
     def add_prepayment_income(self, obj):

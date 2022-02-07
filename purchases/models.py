@@ -58,7 +58,7 @@ class Profitability(models.Model):
     objects = MyManager()
     month_profitability = models.DateField(auto_now_add=True, auto_created=True, verbose_name='Месяц рентабельности')
     income_in_month = models.FloatField(verbose_name='Общий доход за месяц', null=True, default=0.0)
-    costs_in_month = models.FloatField(verbose_name='Общий расход за месяц', null=True, default=0.001)
+    costs_in_month = models.FloatField(verbose_name='Общий расход за месяц', null=True, default=0.0)
     percent_profitability = models.FloatField(verbose_name='Процент рентабельности за месяц', null=True, default=0.0)
 
     def __str__(self):
