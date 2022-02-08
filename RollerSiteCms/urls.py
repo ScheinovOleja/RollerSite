@@ -35,6 +35,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     re_path("admin/", admin.site.urls),
+    re_path('^ckeditor/', include('ckeditor_uploader.urls')),
     re_path('^material-autocomplete/', MaterialAutocomplete.as_view(), name='material-autocomplete'),
     re_path('^type_construct-autocomplete/', TypeConstructAutocomplete.as_view(), name='type_construct-autocomplete'),
     re_path('^control_type-autocomplete/', ControlTypeAutocomplete.as_view(), name='control_type-autocomplete'),
@@ -48,8 +49,7 @@ urlpatterns += i18n_patterns(
     re_path('webhook/', include('rollercms.urls')),
     re_path('^accounts/', include('login.urls')),
     re_path('^ajax_calc/', include('orders.urls')),
-    re_path('^ckeditor/', include('ckeditor_uploader.urls')),
-    re_path("^", include("cms.urls")),
+    re_path("", include("cms.urls")),
 )
 
 # This is only needed when using runserver.
