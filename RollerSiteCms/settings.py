@@ -190,10 +190,13 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = ''
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+STATICFILES_DIRS = [STATIC_DIR]
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 LOGIN_REDIRECT_URL = '/ru/personal_area/'
@@ -208,10 +211,14 @@ CACHE_MIDDLEWARE_SECONDS = '3600'
 # Django-ckeditor
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'
+
 CKEDITOR_IMAGE_BACKEND = 'pillow'
+
+CKEDITOR_BROWSE_SHOW_DIRS = True
 
 CKEDITOR_CONFIGS = {
     'default': {
@@ -224,9 +231,9 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
+CKEDITOR_UPLOAD_SLUGIFY_FILENAME = True
+
 CKEDITOR_RESTRICT_BY_USER = True
-CKEDITOR_BROWSE_SHOW_DIRS = True
 
 # Django-cms settings
 # ___________________________________________________________________________________________________________________
