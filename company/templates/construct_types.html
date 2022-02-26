@@ -4,20 +4,20 @@
 	<link rel="stylesheet" href="{% static "css/style_construct.css" %}"/>
 {% endblock %}
 {% block content %}
-<main class="categories">
-	<div class="container">
-		<ul class="categories-list">
-			{% for construct in type_construct %}
-				<li class="categories-item">
-					<a href="{{ construct.construct.pk }}">
-						<div class="categories-svg">
-							{{ construct.image|safe }}
-						</div>
-					</a>
-					<h3 class="categories-title">{{ construct.category }}</h3>
-				</li>
-			{% endfor %}
-		</ul>
-	</div>
-</main>
+	<main class="categories">
+		<div class="container">
+			<ul class="categories-list">
+				{% for construct in type_construct %}
+					<li class="categories-item">
+						<a href="{{ construct.construct.pk }}">
+							<div class="categories-svg">
+								<img src="{{ construct.image_file.url }}" alt="">
+							</div>
+						</a>
+						<h3 class="categories-title">{{ construct.category }}</h3>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</main>
 {% endblock %}
