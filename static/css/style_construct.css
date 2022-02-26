@@ -172,17 +172,16 @@ body {
     align-items: center;
 }
 
-.categories-svg svg {
-    fill: white;
+.categories-svg img{
+    border-radius: 15px;
+    width: 100%;
+    height: 200px;
 }
 
 .categories-svg:hover {
     background-color: var(--basic-gray-hover);
 }
 
-.categories-svg:hover svg path {
-    fill: var(--basic-black);
-}
 
 .categories-list {
     justify-content: space-around;
