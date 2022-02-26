@@ -14,11 +14,6 @@ class AllConstruct(CMSPlugin):
     type_construct = models.ForeignKey(Page, on_delete=models.DO_NOTHING, verbose_name='Страница показа конструкции',
                                        limit_choices_to={'publisher_is_draft': False})
 
-    def save(self, no_signals=False, *args, **kwargs):
-        if self.image_file.name.endswith('.svg'):
-            self.image = self.image_file.read().decode()
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return f'{self.category}'
 
