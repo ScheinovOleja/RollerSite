@@ -95,11 +95,17 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.cache.CacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
 ]
+
+CACHE_MIDDLEWARE_SECONDS = 2592000
 
 ROOT_URLCONF = 'RollerSiteCms.urls'
 
@@ -194,15 +200,12 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [STATIC_DIR]
 
-
 LOGIN_REDIRECT_URL = '/ru/personal_area/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CACHE_MIDDLEWARE_SECONDS = '3600'
 
 # Django-ckeditor
 

@@ -18,7 +18,7 @@ class SliderPlugin(CMSPluginBase):
 
 class TaglinePlugin(CMSPluginBase):
     module = _("Самодельные плагины")
-    name = _("Слоган и преимущества")
+    name = _("Слоган")
     render_template = "blocks/tagline.html"
     model = Tagline
 
@@ -29,7 +29,7 @@ class TaglinePlugin(CMSPluginBase):
 
 class CreditPlugin(CMSPluginBase):
     module = _("Самодельные плагины")
-    name = _("Информация о кредите")
+    name = _("Преимущества 1-3")
     render_template = "blocks/credit.html"
     model = CreditAndPartnership
 
@@ -40,7 +40,7 @@ class CreditPlugin(CMSPluginBase):
 
 class PartnershipPlugin(CMSPluginBase):
     module = _("Самодельные плагины")
-    name = _("Информация о партнерах")
+    name = _("Преимущества 4-6")
     render_template = "blocks/partnership.html"
     model = CreditAndPartnership
 

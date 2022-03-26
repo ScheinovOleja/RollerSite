@@ -1,4 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
 :root {
     --basic-black: #000000;
     --basic-gray: #9c9c9c;
@@ -282,7 +282,7 @@ ul {
 }
 
 .slide-img {
-    min-width: 90%;
+    min-width: 100%;
     height: 800px;
 }
 
@@ -365,7 +365,7 @@ ul {
 }
 
 .credit {
-    background-image: url("../images/credit/credit.png");
+    background-image: url("../images/credit/credit.avif");
     background-size: cover;
     background-repeat: no-repeat;
     min-height: 800px;
@@ -409,7 +409,7 @@ ul {
 
 .partnership {
     min-height: 801px;
-    background-image: url("../images/partnership/partnership.png");
+    background-image: url("../images/partnership/partnership.avif");
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -1165,6 +1165,11 @@ hr {
     .navigation-link {
         margin-right: 20px;
     }
+
+    .slide-img {
+        min-width: 100%;
+        height: 600px;
+    }
 }
 
 @media (max-width: 992px) {
@@ -1251,6 +1256,11 @@ hr {
     .modal-label__datetime {
         margin-top: 0;
     }
+
+    .slide-img {
+        min-width: 100%;
+        height: 500px;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 930px) {
@@ -1287,6 +1297,11 @@ hr {
         font-size: 40px;
         top: 60px;
         right: 70px;
+    }
+
+    .slide-img {
+        min-width: 100%;
+        height: 400px;
     }
 }
 
@@ -1439,6 +1454,11 @@ hr {
         margin-top: 5px;
     }
 
+    .slide-img {
+        min-width: 100%;
+        height: 400px;
+    }
+
 }
 
 @media (min-width: 576px) and (max-width: 750px) {
@@ -1449,6 +1469,11 @@ hr {
     .container {
         width: 650px;
         padding: 0 20px;
+    }
+
+    .slide-img {
+        min-width: 100%;
+        height: 300px;
     }
 }
 
@@ -1586,6 +1611,11 @@ hr {
         height: 40px;
         background-size: 25px 40px;
     }
+
+    .slide-img {
+        min-width: 100%;
+        height: 300px;
+    }
 }
 
 @media (min-width: 320px) and (max-width: 570px) {
@@ -1671,6 +1701,11 @@ hr {
         width: 30px;
         height: 30px;
     }
+
+    .slide-img {
+        min-width: 100%;
+        height: 300px;
+    }
 }
 
 @media (min-width: 320px) and (max-width: 390px) {
@@ -1731,6 +1766,11 @@ hr {
         transform: translate(50%, 0%);
         width: 30px;
         height: 30px;
+    }
+
+    .slide-img {
+        min-width: 100%;
+        height: 300px;
     }
 }
 

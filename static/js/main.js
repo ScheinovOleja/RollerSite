@@ -125,13 +125,13 @@ function mailSendToTg() {
     if (!name) {
         $(".error-name").show('slow');
         error = true
-    }else if (!phone){
+    } else if (!phone) {
         $(".error-phone").show('slow');
         error = true
-    }else if (!email){
+    } else if (!email) {
         $(".error-email").show('slow');
         error = true
-    }else if (!text){
+    } else if (!text) {
         $(".error-text").show('slow');
         error = true
     }

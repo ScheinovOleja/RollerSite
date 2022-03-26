@@ -1,5 +1,5 @@
 {% load sekizai_tags thumbnail static cms_tags %}
-<section class="slider-wrapper" style="height:{{ instance.height }}px;">
+<section class="slider-wrapper">
 	{% for slide in instance.gallery.photo_set.all %}
 		<div class="slider-slide">
 			<div class="slider-descr">
@@ -12,8 +12,6 @@
 					class="slide-img"
 					src="{{ slide.file.url }}"
 					alt="Фотография слайдера"
-					width="1920"
-					height="{{ instance.height }}"
 			/>
 		</div>
 	{% endfor %}
