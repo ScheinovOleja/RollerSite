@@ -1,5 +1,8 @@
 import os
 import sys
+
+sys.path.append('/root/RollerSite/')
+
 from asyncio.log import logger
 
 from aiogram import Dispatcher
@@ -8,9 +11,6 @@ from aiogram.utils import executor
 from tg_bot import dp, loop
 from tg_bot.handlers import register_registration, register_all_message, \
     register_reviews
-
-sys.path.append('/root/RollerSite/')
-
 
 async def register_handler_registration(dispatcher: Dispatcher):
     register_registration(dispatcher)
