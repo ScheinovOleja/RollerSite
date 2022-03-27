@@ -365,7 +365,7 @@ ul {
 }
 
 .credit {
-    background-image: url("../images/credit/credit.avif");
+    background-image: url("../images/credit/credit.webp");
     background-size: cover;
     background-repeat: no-repeat;
     min-height: 800px;
@@ -408,8 +408,8 @@ ul {
 }
 
 .partnership {
-    min-height: 801px;
-    background-image: url("../images/partnership/partnership.avif");
+    min-height: 800px;
+    background-image: url("../images/partnership/partner.webp");
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -1415,6 +1415,7 @@ hr {
     .main-header__logo svg {
         width: 150px;
         height: 75px;
+        color: white;
     }
 
     .slideTop {
