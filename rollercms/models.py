@@ -81,10 +81,10 @@ class BackCall(CMSPlugin):
 
 class MyGoogleMap(CMSPlugin):
     city = models.CharField('Город', max_length=64, null=False, blank=False)
-    address = models.CharField('Адрес офиса', max_length=64, null=False, blank=False)
+    # address = models.CharField('Адрес офиса', max_length=64, null=False, blank=False)
     phone = models.CharField('Номер телефона', max_length=64, null=False, blank=False)
     email = models.EmailField('Email', max_length=64, null=False, blank=False)
-    map_src = models.URLField('Код карты', max_length=1024, null=False, blank=False)
+    # map_src = models.URLField('Код карты', max_length=1024, null=False, blank=False)
 
 
 class MyLetterCompany(CMSPlugin):
