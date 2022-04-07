@@ -64,6 +64,9 @@ socialBtn.addEventListener("click", openSocialMenu);
 $(".slider-wrapper").slick({
     infinity: true,
     dots: true,
+    speed: 300,
+    autoplay: true,
+    autoplaySpeed: 1000,
 });
 
 $(window).scroll(function () {
