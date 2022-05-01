@@ -5,7 +5,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from pony.orm import db_session
 
-from tg_bot import connection
 from tg_bot.models import LoginMyuser, LoginRegisterfrommessangers
 from tg_bot.states.state import Registration
 
