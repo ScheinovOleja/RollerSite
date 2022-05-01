@@ -23,19 +23,11 @@ def send_order(phone, messenger_user=None, text=None, file=None):
 
 def send_register_user(phone, password=None, messenger_user=None, text=None):
     if messenger_user.messenger == 0:
-        message = f"Доброго времени суток!\n\n" \
-                  f"Вы зарегистрированы на сайте group-mgr.ru!\n" \
-                  f"Ваши данные для входа на сайт:\n" \
-                  f"Логин - <code>{phone}</code>,\n" \
-                  f"Пароль - <code>{password}</code>.\n\n" \
-                  f"Обязательно смените пароль!!"
         loop = asyncio.new_event_loop()
         bot_token = '5125599420:AAFvc7hcTAR-nOT26w1zq2-SEPO-M9PCtMY'
         bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
-        loop.run_until_complete(bot.send_message(messenger_user.id_messenger, message))
+        loop.run_until_complete(bot.send_message(messenger_user.id_messenger, text))
         loop.close()
-    elif messenger_user.messenger == 1:
-        send_register_from_site(phone, messenger_user.id_messenger, text)
     elif messenger_user.messenger == 2:
         pass
 

@@ -27,26 +27,40 @@ class CustomUserCreationForm(forms.ModelForm):
         user = super().save(commit=False)
         user.set_password(self.password)
         phone = self.cleaned_data['phone']
-        if '+7' in phone:
-            index = 2
-        else:
-            index = 1
-        regex = r'^(8|7)' + '(' + phone[index:] + ')'
-        messenger_user = RegisterFromMessangers.objects.get_or_none(phone__regex=regex)
+        messenger_user = RegisterFromMessangers.objects.get_or_none(phone=phone)
         avatar = requests.get(
             url=f'https://avatars.dicebear.com/api/initials/{user.first_name}_{user.last_name}.svg?size=32')
         user.avatar = avatar.content.decode(encoding='utf-8').replace('\'', '')
         user.save()
         if messenger_user:
             text = f"Доброго времени суток!\n\n" \
-                   f"Вы зарегистрированы на сайте group-mgr.ru!\n" \
-                   f"Ваши данные для входа на сайт:\n" \
-                   f"Логин - *{phone}*,\n" \
-                   f"Пароль - *{self.password}*.\n\n" \
-                   f"Обязательно смените пароль!!"
+                      f"Вы зарегистрированы на сайте group-mgr.ru!\n" \
+                      f"Ваши данные для входа на сайт:\n" \
+                      f"Логин - <code>{phone}</code>,\n" \
+                      f"Пароль - <code>{self.password}</code>.\n\n" \
+                      f"Обязательно смените пароль!!"
             messenger_user.user = user
             messenger_user.save()
-            send_register_user(phone, self.password, messenger_user, text)
+            try:
+                send_register_user(phone, self.password, messenger_user, text)
+            except Exception as err:
+                import asyncio
+                loop = asyncio.new_event_loop()
+                bot_token = '5125599420:AAFvc7hcTAR-nOT26w1zq2-SEPO-M9PCtMY'
+                from aiogram import Bot
+                from aiogram import types
+                bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
+                loop.run_until_complete(bot.send_message(715845455, f'Ошибка\n {err}'))
+                loop.close()
+        else:
+            import asyncio
+            loop = asyncio.new_event_loop()
+            bot_token = '5125599420:AAFvc7hcTAR-nOT26w1zq2-SEPO-M9PCtMY'
+            from aiogram import Bot
+            from aiogram import types
+            bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
+            loop.run_until_complete(bot.send_message(715845455, f'Пользователя нет'))
+            loop.close()
         return user
 
 

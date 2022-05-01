@@ -8,9 +8,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-connection = sqlite3.connect('../db.sqlite3')
-
 config = configparser.ConfigParser()
+path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'settings/config.cfg')
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'settings/config.cfg'))
 
 # con = psycopg2.connect(**config['database'])
