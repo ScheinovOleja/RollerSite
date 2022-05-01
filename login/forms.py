@@ -39,7 +39,7 @@ class CustomUserCreationForm(forms.ModelForm):
         user.save()
         if messenger_user:
             text = f"Доброго времени суток!\n\n" \
-                   f"Вы зарегистрированы на сайте example.com!\n" \
+                   f"Вы зарегистрированы на сайте group-mgr.ru!\n" \
                    f"Ваши данные для входа на сайт:\n" \
                    f"Логин - *{phone}*,\n" \
                    f"Пароль - *{self.password}*.\n\n" \
