@@ -24,7 +24,7 @@ def send_order(phone, messenger_user=None, text=None, file=None):
 def send_register_user(phone, password=None, messenger_user=None, text=None):
     if messenger_user.messenger == 0:
         message = f"Доброго времени суток!\n\n" \
-                  f"Вы зарегистрированы на сайте example.com!\n" \
+                  f"Вы зарегистрированы на сайте group-mgr.ru!\n" \
                   f"Ваши данные для входа на сайт:\n" \
                   f"Логин - <code>{phone}</code>,\n" \
                   f"Пароль - <code>{password}</code>.\n\n" \
