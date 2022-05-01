@@ -82,7 +82,6 @@ INSTALLED_APPS = [
     'products',
     'company',
     'letter',
-    'nginx_image',
 ]
 
 AUTH_USER_MODEL = 'login.MyUser'
@@ -153,7 +152,7 @@ DATABASES = {
         'USER': 'oleg',
         'PASSWORD': 'oleg2000',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
