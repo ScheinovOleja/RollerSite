@@ -102,16 +102,19 @@ class OrderAdmin(admin.ModelAdmin):
         super(OrderAdmin, self).delete_queryset(request, queryset)
 
     def delete_model(self, request, obj):
-        all_income = Incoming.objects.filter(order=obj)
-        for income in all_income:
-            profitability = Profitability.objects.get(
-                month_profitability__month=income.date_income.month,
-                month_profitability__year=income.date_income.year
-            )
-            profitability.income_in_month -= income.sum
-            profitability.percent_profitability = round(
-                (profitability.income_in_month / profitability.costs_in_month) * 100, 2)
-            profitability.save()
+        try:
+            all_income = Incoming.objects.filter(order=obj)
+            for income in all_income:
+                profitability = Profitability.objects.get(
+                    month_profitability__month=income.date_income.month,
+                    month_profitability__year=income.date_income.year
+                )
+                profitability.income_in_month -= income.sum
+                profitability.percent_profitability = round(
+                    (profitability.income_in_month / profitability.costs_in_month) * 100, 2)
+                profitability.save()
+        except Exception as err:
+            pass
         super(OrderAdmin, self).delete_model(request, obj)
 
     def calc_profitability(self, income):

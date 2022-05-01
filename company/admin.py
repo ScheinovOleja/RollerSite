@@ -4,6 +4,11 @@ from cms.admin.static_placeholder import StaticPlaceholderAdmin
 from cms.models import Page, PageType, StaticPlaceholder, UserSettings, PagePermission
 from django.contrib import admin
 
+from filer.admin import ThumbnailOptionAdmin, PermissionAdmin, ImageAdmin, ClipboardAdmin, FileAdmin, FolderAdmin
+from filer.models import Folder, File, Clipboard, FolderPermission, ThumbnailOption
+from filer.settings import FILER_IMAGE_MODEL
+from filer.utils.loader import load_model
+
 # Register your models here.
 from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import GroupAdmin
@@ -70,3 +75,13 @@ admin.site.register(PageType, PageTypeAdmin)
 admin.site.register(StaticPlaceholder, StaticPlaceholderAdmin)
 
 admin.site.register(PagePermission)
+
+
+Image = load_model(FILER_IMAGE_MODEL)
+
+admin.site.register(Folder, FolderAdmin)
+admin.site.register(File, FileAdmin)
+admin.site.register(Clipboard, ClipboardAdmin)
+admin.site.register(Image, ImageAdmin)
+admin.site.register(FolderPermission, PermissionAdmin)
+admin.site.register(ThumbnailOption, ThumbnailOptionAdmin)

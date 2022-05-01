@@ -4,7 +4,6 @@ from django.utils.translation import ugettext as _
 
 from .models import Slider, Tagline, CreditAndPartnership, BackCall, MyGoogleMap
 
-
 class SliderPlugin(CMSPluginBase):
     module = _("Самодельные плагины")
     name = _("Слайдер")
@@ -89,3 +88,4 @@ plugin_pool.register_plugin(PartnershipPlugin)
 plugin_pool.register_plugin(BackCallPlugin)
 plugin_pool.register_plugin(MyGoogleMapPlugin)
 # plugin_pool.register_plugin(MyLetterPlugin)
+

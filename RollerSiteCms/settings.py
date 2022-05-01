@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-4@l(prvpk)ds=+^o*3udfp6rh^+uvm_d&s5^odc#+vuqx**!)*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['185.251.88.106', 'localhost']
+ALLOWED_HOSTS = ['group-mgr.ru', 'localhost', 'www.group-mgr.ru']
 
 # Application definition
 
@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'djangocms_text_ckeditor',
     'ckeditor',
     'ckeditor_uploader',
-    'login.apps.FilerConfig',
     'easy_thumbnails',
+    'filer',
     'mptt',
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
@@ -81,7 +81,8 @@ INSTALLED_APPS = [
     'purchases',
     'products',
     'company',
-    'letter'
+    'letter',
+    'nginx_image',
 ]
 
 AUTH_USER_MODEL = 'login.MyUser'
@@ -194,11 +195,11 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-STATICFILES_DIRS = [STATIC_DIR]
+#STATICFILES_DIRS = [STATIC_ROOT]
 
 LOGIN_REDIRECT_URL = '/ru/personal_area/'
 
@@ -293,6 +294,5 @@ CMS_PLACEHOLDER_CONF = {
 CMS_TEMPLATES = (
     ('MainPage.html', 'Базовый шаблон'),
     ('personal_area.html', 'Личный кабинет'),
-    ('blog.html', 'Блог')
     # ('blog.html', 'Блог'),
 )
