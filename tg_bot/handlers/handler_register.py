@@ -36,7 +36,7 @@ async def get_number(message: types.Message, state: FSMContext):
             LoginRegisterfrommessangers(
                 messenger=0,
                 id_messenger=str(message.contact.user_id),
-                phone=message.contact.phone_number,
+                phone=message.contact.phone_number if not '+' in message.contact.phone_number else '+' + message.contact.phone_number,
                 user=user
             )
             text = 'Спасибо за регистрацию!\n\nОжидайте, скоро вам придет оповещение о вашем заказе!'
