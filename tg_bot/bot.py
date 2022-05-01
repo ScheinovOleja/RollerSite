@@ -1,7 +1,7 @@
 import os
 import sys
 
-# sys.path.append('/root/RollerSite/')
+sys.path.append('/root/RollerSite/')
 
 from asyncio.log import logger
 
